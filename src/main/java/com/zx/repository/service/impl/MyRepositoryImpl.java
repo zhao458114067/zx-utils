@@ -1,6 +1,8 @@
 package com.zx.repository.service.impl;
 
 import com.zx.repository.constant.Constants;
+import com.zx.repository.constant.ErrorCodeEnum;
+import com.zx.repository.exception.MyException;
 import com.zx.repository.service.MyRepository;
 import com.zx.repository.util.ReflectUtil;
 import com.zx.repository.util.Utils;
@@ -42,8 +44,14 @@ public class MyRepositoryImpl<T, ID extends Serializable>
 
     @Override
     public Page<T> findByPage(Map<String, String> tableMap, List<String> excludeAttr, Map joinField, String sortAttr) {
-        int current = Integer.valueOf(tableMap.get(Constants.CURRENT));
-        int pageSize = Integer.valueOf(tableMap.get(Constants.PAGE_SIZE));
+        int current = 0;
+        int pageSize = 0;
+        try {
+            current = Integer.valueOf(tableMap.get(Constants.CURRENT));
+            pageSize = Integer.valueOf(tableMap.get(Constants.PAGE_SIZE));
+        } catch (Exception e) {
+            throw new MyException(ErrorCodeEnum.PARAMS_ERROR.getErrorCode(), ErrorCodeEnum.PARAMS_ERROR.getErrorMessage());
+        }
 
         Pageable pageable;
         if (!StringUtils.isEmpty(sortAttr)) {

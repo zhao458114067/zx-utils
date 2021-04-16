@@ -35,42 +35,49 @@ public class ReflectUtil {
             List<Predicate> predicates = new ArrayList<>();
 
             //未删除的数据
-            predicates.add(cb.equal(root.get(Constants.VALID), 1));
+            try {
+                clazz.getDeclaredField(Constants.VALID);
+                predicates.add(cb.equal(root.get(Constants.VALID), 1));
+            } catch (NoSuchFieldException e) {
+
+            }
 
             Field[] declaredFields = clazz.getDeclaredFields();
 
-            for (Field field : declaredFields) {
-                String fieldName = field.getName();
-                if (!StringUtils.isEmpty(tableMap.get(fieldName))) {
-                    String typeName = field.getGenericType().getTypeName();
-                    Class<?> aClass = null;
-                    try {
-                        aClass = Class.forName(typeName);
-                    } catch (ClassNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                    //属性不包含特定的属性并且是字符串采用模糊搜索
-                    if (aClass == String.class && (CollectionUtils.isEmpty(excludeAttr) || !excludeAttr.contains(fieldName))) {
-                        String queryFieldName = "%" + tableMap.get(fieldName).replace("/", "\\/")
-                                .replaceAll("_", "\\\\_").replaceAll("%", "\\\\%") + "%";
-                        predicates.add(cb.like(root.get(fieldName), queryFieldName));
-                    } else {
-                        predicates.add(cb.equal(root.get(fieldName), tableMap.get(fieldName)));
+            if (tableMap != null) {
+                for (Field field : declaredFields) {
+                    String fieldName = field.getName();
+                    if (!StringUtils.isEmpty(tableMap.get(fieldName))) {
+                        String typeName = field.getGenericType().getTypeName();
+                        Class<?> aClass = null;
+                        try {
+                            aClass = Class.forName(typeName);
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        //属性不包含特定的属性并且是字符串采用模糊搜索
+                        if (aClass == String.class && (CollectionUtils.isEmpty(excludeAttr) || !excludeAttr.contains(fieldName))) {
+                            String queryFieldName = "%" + tableMap.get(fieldName).replace("/", "\\/")
+                                    .replaceAll("_", "\\\\_").replaceAll("%", "\\\\%") + "%";
+                            predicates.add(cb.like(root.get(fieldName), queryFieldName));
+                        } else {
+                            predicates.add(cb.equal(root.get(fieldName), tableMap.get(fieldName)));
+                        }
                     }
                 }
-            }
-            if (!CollectionUtils.isEmpty(map)) {
-                Iterator iterator = map.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String sourceKey = iterator.next().toString();
-                    Map mapping = (Map) map.get(sourceKey);
-                    Join join = root.join(sourceKey, JoinType.INNER);
-                    Iterator mappingItr = mapping.keySet().iterator();
-                    while (mappingItr.hasNext()) {
-                        String joinKey = mappingItr.next().toString();
-                        String joinAttr = mapping.get(joinKey).toString();
-                        if (!StringUtils.isEmpty(tableMap.get(joinKey))) {
-                            predicates.add(cb.equal(join.get(joinAttr), tableMap.get(joinKey)));
+                if (!CollectionUtils.isEmpty(map)) {
+                    Iterator iterator = map.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String sourceKey = iterator.next().toString();
+                        Map mapping = (Map) map.get(sourceKey);
+                        Join join = root.join(sourceKey, JoinType.INNER);
+                        Iterator mappingItr = mapping.keySet().iterator();
+                        while (mappingItr.hasNext()) {
+                            String joinKey = mappingItr.next().toString();
+                            String joinAttr = mapping.get(joinKey).toString();
+                            if (!StringUtils.isEmpty(tableMap.get(joinKey))) {
+                                predicates.add(cb.equal(join.get(joinAttr), tableMap.get(joinKey)));
+                            }
                         }
                     }
                 }
