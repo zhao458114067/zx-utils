@@ -1,4 +1,4 @@
-package com.supcon.mare.repository.service;
+package com.zx.repository.service;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;

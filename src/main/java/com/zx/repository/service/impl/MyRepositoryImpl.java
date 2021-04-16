@@ -1,9 +1,9 @@
-package com.supcon.mare.repository.service.impl;
+package com.zx.repository.service.impl;
 
-import com.supcon.mare.repository.constant.Constants;
-import com.supcon.mare.repository.service.MyRepository;
-import com.supcon.mare.repository.util.ReflectUtil;
-import com.supcon.mare.repository.util.Utils;
+import com.zx.repository.constant.Constants;
+import com.zx.repository.service.MyRepository;
+import com.zx.repository.util.ReflectUtil;
+import com.zx.repository.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

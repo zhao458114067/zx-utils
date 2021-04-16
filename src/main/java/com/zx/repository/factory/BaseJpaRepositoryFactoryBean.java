@@ -1,6 +1,6 @@
-package com.supcon.mare.repository.factory;
+package com.zx.repository.factory;
 
-import com.supcon.mare.repository.service.impl.MyRepositoryImpl;
+import com.zx.repository.service.impl.MyRepositoryImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;

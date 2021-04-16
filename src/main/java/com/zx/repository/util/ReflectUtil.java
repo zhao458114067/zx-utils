@@ -1,6 +1,6 @@
-package com.supcon.mare.repository.util;
+package com.zx.repository.util;
 
-import com.supcon.mare.repository.constant.Constants;
+import com.zx.repository.constant.Constants;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;

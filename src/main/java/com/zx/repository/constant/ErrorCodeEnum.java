@@ -1,4 +1,4 @@
-package com.supcon.mare.repository.constant;
+package com.zx.repository.constant;
 
 /***
  * @author: zhaoxu
