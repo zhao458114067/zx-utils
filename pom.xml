@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.supcon.mare</groupId>
+    <groupId>com.zx.projects</groupId>
     <artifactId>repository-util</artifactId>
     <version>1.0.0</version>
     <build>
@@ -66,15 +66,15 @@
         </license>
     </licenses>
     <scm>
-        <connection>scm:git:https://github.com/songyz0310/java-toolkits.git</connection>
-        <developerConnection>scm:git:https://github.com/songyz0310/java-toolkits.git</developerConnection>
-        <url>git:https://github.com/songyz0310/java-toolkits.git</url>
+        <connection>scm:git:https://github.com/zhao458114067/repository-util.git</connection>
+        <developerConnection>scm:git:https://github.com/zhao458114067/repository-util.git</developerConnection>
+        <url>git:https://github.com/zhao458114067/repository-util.git</url>
     </scm>
     <developers>
         <developer>
-            <name>songyz</name>
-            <email>songyinzeng@gmail.com</email>
-            <organization>i1stcs</organization>
+            <name>zx</name>
+            <email>zhaoxu1@supcon.com</email>
+            <organization>zx</organization>
         </developer>
     </developers>
 </project>
