@@ -8,12 +8,10 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -26,8 +24,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * @author zss
+ * @author zhaoxu
  */
+@Component
 public class Utils {
 
     static Pattern numberPattern = Pattern.compile("[0-9]*");
@@ -39,7 +38,7 @@ public class Utils {
     /**
      * 类型转换
      */
-    public static List<Long> getTypeConvert(List<String> ids) {
+    public List<Long> getTypeConvert(List<String> ids) {
         List<Long> list = new ArrayList<>();
         if (null != ids && ids.size() > 0) {
             for (String id : ids) {
@@ -55,7 +54,7 @@ public class Utils {
     /**
      * 获取当前格式化时间
      */
-    public static Date getNowDate() {
+    public Date getNowDate() {
         Date now = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:mm:ss");
         String dateStr = dateFormat.format(now);
@@ -71,7 +70,7 @@ public class Utils {
     /**
      * 从输入流读取完整字符串
      */
-    public static String getStringFromInputStream(InputStream inputStream) throws IOException {
+    public String getStringFromInputStream(InputStream inputStream) throws IOException {
         String s = "";
         StringBuffer sb = new StringBuffer();
         BufferedReader bufferedReader = null;
@@ -95,7 +94,7 @@ public class Utils {
      * @return
      * @throws UnknownHostException
      */
-    public static String getIp() {
+    public String getIp() {
         try {
             Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
             InetAddress ip = null;
@@ -125,7 +124,7 @@ public class Utils {
      * @param time
      * @return
      */
-    public static Date timeToDate(String time) {
+    public Date timeToDate(String time) {
         SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String str = sdfTime.format(Long.valueOf(time));
         try {
@@ -143,7 +142,7 @@ public class Utils {
      * @param date
      * @return
      */
-    public static String stringToTime(String date) {
+    public String stringToTime(String date) {
         SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date dateDate = sdfTime.parse(date);
@@ -161,7 +160,7 @@ public class Utils {
      * @param sorterBy 默认按此属性排序
      * @return
      */
-    public static Sort sortAttr(Map<String, String> tableMap, String sorterBy) {
+    public Sort sortAttr(Map<String, String> tableMap, String sorterBy) {
         Sort sort;
         if (tableMap.get(Constants.SORTER) != null && !Constants.EMPTY_SORTER.equals(tableMap.get(Constants.SORTER))) {
             JSONObject sorter = JSONObject.parseObject(tableMap.get(Constants.SORTER));
@@ -184,7 +183,7 @@ public class Utils {
      * @param str
      * @return
      */
-    public static boolean isNumeric(String str) {
+    public boolean isNumeric(String str) {
         Matcher isNum = numberPattern.matcher(str);
         if (StringUtils.isEmpty(str) || !isNum.matches()) {
             return false;
@@ -200,7 +199,7 @@ public class Utils {
      * @param column 列下标
      * @return
      */
-    public static boolean isMergedRegion(Sheet sheet, int row, int column) {
+    public boolean isMergedRegion(Sheet sheet, int row, int column) {
         int sheetMergeCount = sheet.getNumMergedRegions();
         for (int i = 0; i < sheetMergeCount; i++) {
             CellRangeAddress range = sheet.getMergedRegion(i);
@@ -225,7 +224,7 @@ public class Utils {
      * @param column
      * @return
      */
-    public static String getMergedRegionValue(Sheet sheet, int row, int column) {
+    public String getMergedRegionValue(Sheet sheet, int row, int column) {
         int sheetMergeCount = sheet.getNumMergedRegions();
         for (int i = 0; i < sheetMergeCount; i++) {
             CellRangeAddress ca = sheet.getMergedRegion(i);
@@ -243,5 +242,44 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    /**
+     * 按行读取全部文件数据
+     *
+     * @param strFile
+     */
+    public StringBuffer readFile(String strFile) throws IOException {
+        StringBuffer strSb = new StringBuffer();
+        InputStreamReader inStrR = new InputStreamReader(new FileInputStream(strFile), "UTF-8");
+        // character streams
+        BufferedReader br = new BufferedReader(inStrR);
+        String line = br.readLine();
+        while (line != null) {
+            strSb.append(line).append("\r\n");
+            line = br.readLine();
+        }
+        return strSb;
+    }
+
+    /**
+     * 写入文件
+     * @param fileName
+     * @param s
+     * @throws IOException
+     */
+    public void writeToFile(String fileName,String s) throws IOException {
+        File f1 = new File(fileName);
+        OutputStream out = null;
+        BufferedWriter bw = null;
+        if (f1.exists()) {
+            out = new FileOutputStream(f1);
+            bw = new BufferedWriter(new OutputStreamWriter(out, "utf-8"));
+            bw.write(s);
+            bw.flush();
+            bw.close();
+        } else {
+            System.out.println("文件不存在");
+        }
     }
 }

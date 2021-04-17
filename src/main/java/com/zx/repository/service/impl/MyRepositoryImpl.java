@@ -31,6 +31,8 @@ public class MyRepositoryImpl<T, ID extends Serializable>
 
     private ReflectUtil reflectUtil = new ReflectUtil();
 
+    private Utils utils = new Utils();
+
     private EntityManager entityManager;
 
     private Class<T> clazz;
@@ -55,7 +57,7 @@ public class MyRepositoryImpl<T, ID extends Serializable>
 
         Pageable pageable;
         if (!StringUtils.isEmpty(sortAttr)) {
-            pageable = PageRequest.of(current - 1, pageSize, Utils.sortAttr(tableMap, sortAttr));
+            pageable = PageRequest.of(current - 1, pageSize, utils.sortAttr(tableMap, sortAttr));
         } else {
             pageable = PageRequest.of(current - 1, pageSize);
         }
@@ -69,7 +71,7 @@ public class MyRepositoryImpl<T, ID extends Serializable>
         Specification<T> specification = reflectUtil.createSpecification(tableMap, clazz, excludeAttr, joinField);
 
         if (!StringUtils.isEmpty(sortAttr)) {
-            return this.findAll(specification, Utils.sortAttr(tableMap, sortAttr));
+            return this.findAll(specification, utils.sortAttr(tableMap, sortAttr));
         } else {
             return this.findAll(specification);
         }
@@ -84,7 +86,7 @@ public class MyRepositoryImpl<T, ID extends Serializable>
             strings.stream().forEach(id -> {
                 Object object = this.findById((ID) Long.valueOf(id)).get();
                 reflectUtil.setValue(clazz, object, "valid", 0);
-                reflectUtil.setValue(clazz, object, "gmtModified", Utils.getNowDate());
+                reflectUtil.setValue(clazz, object, "gmtModified", utils.getNowDate());
             });
         }
     }

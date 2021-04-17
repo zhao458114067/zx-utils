@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.zx.repository.util.ReflectUtil,\
+  com.zx.repository.util.Utils
