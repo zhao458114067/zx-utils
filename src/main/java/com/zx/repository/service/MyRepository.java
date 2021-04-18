@@ -4,7 +4,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.NoRepositoryBean;
-import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.Map;
  * @description: JPA通用功能扩展
  */
 @NoRepositoryBean
-public interface MyRepository<T, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T>, PagingAndSortingRepository<T, ID> {
+public interface MyRepository<T, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 
     /**
      * 分页条件查询
@@ -44,7 +43,7 @@ public interface MyRepository<T, ID extends Serializable> extends JpaRepository<
      *
      * @param ids ","隔开
      */
-    void deleteValid(String ids);
+    void deleteValid(String ids) throws NoSuchFieldException;
 
     /**
      * 查询某一个实体，查询到多个只返回第一个

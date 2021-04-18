@@ -9,9 +9,13 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.*;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -33,22 +37,6 @@ public class Utils {
 
     public static void main(String[] args) throws IOException {
 
-    }
-
-    /**
-     * 类型转换
-     */
-    public List<Long> getTypeConvert(List<String> ids) {
-        List<Long> list = new ArrayList<>();
-        if (null != ids && ids.size() > 0) {
-            for (String id : ids) {
-                list.add(Long.valueOf(id != null ? id : "0"));
-            }
-        } else {
-            list.add(0L);
-        }
-
-        return list;
     }
 
     /**
@@ -264,11 +252,12 @@ public class Utils {
 
     /**
      * 写入文件
+     *
      * @param fileName
      * @param s
      * @throws IOException
      */
-    public void writeToFile(String fileName,String s) throws IOException {
+    public void writeToFile(String fileName, String s) throws IOException {
         File f1 = new File(fileName);
         OutputStream out = null;
         BufferedWriter bw = null;
@@ -280,6 +269,92 @@ public class Utils {
             bw.close();
         } else {
             System.out.println("文件不存在");
+        }
+    }
+
+    /**
+     * 获取用户真实IP地址，不使用request.getRemoteAddr()的原因是有可能用户使用了代理软件方式避免真实IP地址,
+     * 可是，如果通过了多级反向代理的话，X-Forwarded-For的值并不止一个，而是一串IP值
+     *
+     * @return ip
+     */
+    private String getIpAddr(HttpServletRequest request) {
+        String ip = request.getHeader("x-forwarded-for");
+        System.out.println("x-forwarded-for ip: " + ip);
+        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+            // 多次反向代理后会有多个ip值，第一个ip才是真实ip
+            if (ip.indexOf(",") != -1) {
+                ip = ip.split(",")[0];
+            }
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("Proxy-Client-IP");
+            System.out.println("Proxy-Client-IP ip: " + ip);
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+            System.out.println("WL-Proxy-Client-IP ip: " + ip);
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+            System.out.println("HTTP_CLIENT_IP ip: " + ip);
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+            System.out.println("HTTP_X_FORWARDED_FOR ip: " + ip);
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getHeader("X-Real-IP");
+            System.out.println("X-Real-IP ip: " + ip);
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+            System.out.println("getRemoteAddr ip: " + ip);
+        }
+        System.out.println("获取客户端ip: " + ip);
+        return ip;
+    }
+
+    /**
+     * 获取
+     *
+     * @param objectClass
+     * @param annoClass
+     * @return
+     */
+    public List<Field> getTargetAnnoation(Class<?> objectClass, Class<? extends Annotation> annoClass) {
+        List<Field> fields = new ArrayList<>();
+        Field[] declaredFields = objectClass.getDeclaredFields();
+        for (Field field : declaredFields) {
+            field.setAccessible(true);
+            //是否拥有指定注解类，如果没有就返回null， 有的话则返回这个注解类对象
+            if (!field.isAnnotationPresent(annoClass)) {
+                continue;
+            } else {
+                fields.add(field);
+            }
+        }
+        if (!CollectionUtils.isEmpty(fields)) {
+            return fields;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * 转换字符串
+     *
+     * @param str
+     * @param tClass
+     * @return
+     */
+    public Object covertStr(String str, Class<?> tClass) {
+        if (tClass == Long.class) {
+            return Long.valueOf(str);
+        } else if (tClass == Integer.class || tClass == int.class || tClass == short.class) {
+            return Integer.valueOf(str);
+        } else {
+            return str;
         }
     }
 }

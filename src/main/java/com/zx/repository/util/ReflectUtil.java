@@ -90,6 +90,34 @@ public class ReflectUtil {
     }
 
     /**
+     * 指定条件查询
+     *
+     * @param attr
+     * @param condition
+     * @param <S>
+     * @return
+     */
+    public <S> Specification<S> createOneSpecification(String attr, String condition) {
+        Specification<S> specification = (root, query, cb) -> {
+            List<Predicate> predicates = new ArrayList<>();
+
+            //未删除的数据
+            try {
+                predicates.add(cb.equal(root.get(Constants.VALID), 1));
+            } catch (Exception e) {
+
+            }
+
+            predicates.add(cb.equal(root.get(attr), condition));
+
+            Predicate[] pre = new Predicate[predicates.size()];
+            Predicate preAnd = cb.and(predicates.toArray(pre));
+            return query.where(preAnd).getRestriction();
+        };
+        return specification;
+    }
+
+    /**
      * 通过方法名动态执行某个方法
      *
      * @param clazz
@@ -140,10 +168,10 @@ public class ReflectUtil {
             Field declaredField = clazz.getDeclaredField(property);
             declaredField.setAccessible(true);
             declaredField.set(object, value);
-        } catch (NoSuchFieldException e) {
-            return false;
         } catch (IllegalAccessException e) {
-            return false;
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
         }
         return true;
     }

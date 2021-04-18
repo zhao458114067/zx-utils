@@ -11,4 +11,5 @@ public interface Constants {
     String SORTER = "sorter";
     String EMPTY_SORTER = "{}";
     String ASCEND = "ascend";
+    String QUESTION = "?";
 }

@@ -1,8 +1,6 @@
 package com.zx.repository.service.impl;
 
 import com.zx.repository.constant.Constants;
-import com.zx.repository.constant.ErrorCodeEnum;
-import com.zx.repository.exception.MyException;
 import com.zx.repository.service.MyRepository;
 import com.zx.repository.util.ReflectUtil;
 import com.zx.repository.util.Utils;
@@ -19,8 +17,13 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author: zhaoxu
@@ -45,15 +48,9 @@ public class MyRepositoryImpl<T, ID extends Serializable>
     }
 
     @Override
-    public Page<T> findByPage(Map<String, String> tableMap, List<String> excludeAttr, Map joinField, String sortAttr) {
-        int current = 0;
-        int pageSize = 0;
-        try {
-            current = Integer.valueOf(tableMap.get(Constants.CURRENT));
-            pageSize = Integer.valueOf(tableMap.get(Constants.PAGE_SIZE));
-        } catch (Exception e) {
-            throw new MyException(ErrorCodeEnum.PARAMS_ERROR.getErrorCode(), ErrorCodeEnum.PARAMS_ERROR.getErrorMessage());
-        }
+    public Page<T> findByPage(Map<String, String> tableMap, List<String> excludeAttr, Map joinField, String sortAttr) throws NullPointerException {
+        int current = Integer.valueOf(tableMap.get(Constants.CURRENT));
+        int pageSize = Integer.valueOf(tableMap.get(Constants.PAGE_SIZE));
 
         Pageable pageable;
         if (!StringUtils.isEmpty(sortAttr)) {
@@ -83,29 +80,30 @@ public class MyRepositoryImpl<T, ID extends Serializable>
     public void deleteValid(String ids) {
         List<String> strings = Arrays.asList(ids.split(","));
         if (!CollectionUtils.isEmpty(strings)) {
-            strings.stream().forEach(id -> {
-                Object object = this.findById((ID) Long.valueOf(id)).get();
-                reflectUtil.setValue(clazz, object, "valid", 0);
-                reflectUtil.setValue(clazz, object, "gmtModified", utils.getNowDate());
-            });
+            //获取主键
+            List<Field> idAnnoation = utils.getTargetAnnoation(clazz, Id.class);
+            if (!CollectionUtils.isEmpty(idAnnoation)) {
+                Field field = idAnnoation.get(0);
+
+                strings.stream().forEach(id -> {
+                    T object = this.findByAttr(field.getName(), id);
+                    if (object != null) {
+                        reflectUtil.setValue(clazz, object, "valid", 0);
+                        reflectUtil.setValue(clazz, object, "gmtModified", utils.getNowDate());
+                        this.save(object);
+                    }
+                });
+            }
         }
     }
 
     @Override
     public T findByAttr(String attr, String condition) {
-        List<T> resultList = new ArrayList<>();
-        List<String> excludeAttr = new ArrayList<>();
+        Specification<T> specification = reflectUtil.createOneSpecification(attr, condition);
+        Optional<T> result = this.findOne(specification);
 
-        Map<String, String> tableMap = new HashMap<>(4);
-        tableMap.put(attr, condition);
-
-        excludeAttr.add(attr);
-
-        Specification<T> specification = reflectUtil.createSpecification(tableMap, clazz, excludeAttr, null);
-        resultList.addAll(this.findAll(specification));
-
-        if (!CollectionUtils.isEmpty(resultList)) {
-            return resultList.get(0);
+        if (result.isPresent()) {
+            return result.get();
         } else {
             return null;
         }
