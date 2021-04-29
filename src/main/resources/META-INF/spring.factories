@@ -2,4 +2,4 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.zx.repository.util.ReflectUtil,\
   com.zx.repository.util.Utils,\
   com.zx.repository.util.HttpClientUtil,\
-  com.zx.repository.util.MyBaseConverter
+  com.zx.repository.util.MyBaseConverter 

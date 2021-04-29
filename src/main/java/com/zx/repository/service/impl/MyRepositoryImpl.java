@@ -20,10 +20,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.Id;
 import java.io.Serializable;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author: zhaoxu
@@ -107,5 +104,20 @@ public class MyRepositoryImpl<T, ID extends Serializable>
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<T> findByAttrs(String attr, String conditions) {
+        List<T> results = new ArrayList<>();
+        if(!StringUtils.isEmpty(conditions)){
+            List<String> cons = Arrays.asList(conditions.split(","));
+            cons.stream().forEach(condition -> {
+                T byAttr = findByAttr(attr, condition);
+                if (byAttr != null) {
+                    results.add(byAttr);
+                }
+            });
+        }
+        return results;
     }
 }

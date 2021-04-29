@@ -46,11 +46,20 @@ public interface MyRepository<T, ID extends Serializable> extends JpaRepository<
     void deleteValid(String ids) throws NoSuchFieldException;
 
     /**
-     * 查询某一个实体，查询到多个只返回第一个
+     * 全匹配查询某一个实体，查询到多个只返回第一个
      *
-     * @param attr      属性名称（id、name、code ...）
+     * @param attr      属性名称，一般是唯一标识（id、code ...）
      * @param condition 对应条件（1、罐1、TK1000 ...）
      * @return
      */
     T findByAttr(String attr, String condition);
+
+    /**
+     * 全匹配查询实体
+     *
+     * @param attr       属性名称，一般是唯一标识（id、code ...）
+     * @param conditions 对应条件,list
+     * @return
+     */
+    List<T> findByAttrs(String attr, String conditions);
 }

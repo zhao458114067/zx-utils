@@ -1,6 +1,8 @@
 package com.zx.repository.util;
 
 import com.zx.repository.constant.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
@@ -20,6 +22,7 @@ import java.util.*;
  */
 @Component
 public class ReflectUtil {
+    static final Logger logger = LoggerFactory.getLogger(ReflectUtil.class);
     /**
      * 生成全属性条件查询通用Specification
      *
@@ -37,9 +40,13 @@ public class ReflectUtil {
             //未删除的数据
             try {
                 clazz.getDeclaredField(Constants.VALID);
-                predicates.add(cb.equal(root.get(Constants.VALID), 1));
+                if (!StringUtils.isEmpty(tableMap.get(Constants.VALID))) {
+                    predicates.add(cb.equal(root.get(Constants.VALID), Integer.valueOf(tableMap.get(Constants.VALID))));
+                } else {
+                    predicates.add(cb.equal(root.get(Constants.VALID), 1));
+                }
             } catch (NoSuchFieldException e) {
-
+                logger.warn("没有找到 {valid} 属性");
             }
 
             Field[] declaredFields = clazz.getDeclaredFields();
@@ -105,7 +112,7 @@ public class ReflectUtil {
             try {
                 predicates.add(cb.equal(root.get(Constants.VALID), 1));
             } catch (Exception e) {
-
+                logger.warn("没有找到 {valid} 属性");
             }
 
             predicates.add(cb.equal(root.get(attr), condition));
