@@ -23,6 +23,7 @@ import java.util.*;
 @Component
 public class ReflectUtil {
     static final Logger logger = LoggerFactory.getLogger(ReflectUtil.class);
+
     /**
      * 生成全属性条件查询通用Specification
      *
@@ -127,8 +128,7 @@ public class ReflectUtil {
     /**
      * 通过方法名动态执行某个方法
      *
-     * @param clazz
-     * @param o
+     * @param object
      * @param methodName
      * @param parameters
      * @return
@@ -136,32 +136,16 @@ public class ReflectUtil {
      * @throws IllegalAccessException
      * @throws NoSuchMethodException
      */
-    public Object executeMethod(Class<?> clazz, Object o, String methodName, Object... parameters) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public Object executeMethod(Object object, String methodName, Object... parameters) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        Class<?> clazz = object.getClass();
         ArrayList<Class<?>> paramTypeList = new ArrayList<>();
         for (Object paramType : parameters) {
             paramTypeList.add(paramType.getClass());
         }
         Class<?>[] classArray = new Class[paramTypeList.size()];
         Method method = clazz.getMethod(methodName, paramTypeList.toArray(classArray));
-        Object invoke = method.invoke(o, parameters);
+        Object invoke = method.invoke(object, parameters);
         return invoke;
-    }
-
-    /**
-     * 获取所有属性值
-     *
-     * @return
-     * @throws IllegalAccessException
-     */
-    public Map<String, Object> getFieldsValue(Class clazz, Object object) throws IllegalAccessException {
-        Map<String, Object> fieldValuesMap = new HashMap<>(16);
-        Field[] fields = clazz.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            Object fieldValue = field.get(object);
-            fieldValuesMap.put(field.getName(), fieldValue);
-        }
-        return fieldValuesMap;
     }
 
     /**
@@ -170,7 +154,8 @@ public class ReflectUtil {
      * @param property
      * @param value
      */
-    public Boolean setValue(Class clazz, Object object, String property, Object value) {
+    public Boolean setValue(Object object, String property, Object value) {
+        Class<?> clazz = object.getClass();
         try {
             Field declaredField = clazz.getDeclaredField(property);
             declaredField.setAccessible(true);
@@ -181,6 +166,47 @@ public class ReflectUtil {
             e.printStackTrace();
         }
         return true;
+    }
+
+    /**
+     * 获取对象所有属性及对应的类别
+     *
+     * @param object
+     * @return
+     * @throws IllegalAccessException
+     */
+    public Map<String, Class<?>> getFields(Object object) throws IllegalAccessException {
+        Class<?> clazz = object.getClass();
+        Map<String, Class<?>> attrMap = new HashMap<>(16);
+        if (clazz != null) {
+            Iterator<String> iterator = getValues(object).keySet().iterator();
+
+            while (iterator.hasNext()) {
+                attrMap.put(iterator.next(), Object.class);
+            }
+        }
+        return attrMap;
+    }
+
+    /**
+     * 获取所有属性值
+     *
+     * @return
+     * @throws IllegalAccessException
+     */
+    public Map<String, Object> getValues(Object object) throws IllegalAccessException {
+        Map<String, Object> fieldValuesMap = new HashMap(16);
+        Class<?> clazz = object.getClass();
+        if (clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object fieldValue = field.get(object);
+                fieldValuesMap.put(field.getName(), fieldValue);
+            }
+            return fieldValuesMap;
+        }
+        return fieldValuesMap;
     }
 
 }

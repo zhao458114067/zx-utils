@@ -85,8 +85,8 @@ public class MyRepositoryImpl<T, ID extends Serializable>
                 strings.stream().forEach(id -> {
                     T object = this.findByAttr(field.getName(), id);
                     if (object != null) {
-                        reflectUtil.setValue(clazz, object, "valid", 0);
-                        reflectUtil.setValue(clazz, object, "gmtModified", utils.getNowDate());
+                        reflectUtil.setValue(object, "valid", 0);
+                        reflectUtil.setValue(object, "gmtModified", utils.getNowDate());
                         this.save(object);
                     }
                 });
