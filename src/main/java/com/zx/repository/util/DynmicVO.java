@@ -109,7 +109,7 @@ public class DynmicVO {
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    public void put(Object object) throws IllegalAccessException, NoSuchFieldException {
+    public void putAll(Object object) throws IllegalAccessException, NoSuchFieldException {
         Class<?> clazz = object.getClass();
         Field[] declaredFields = clazz.getDeclaredFields();
         Map<String, Object> fieldValuesMap = new HashMap(16);
@@ -131,7 +131,6 @@ public class DynmicVO {
             Object value = fieldValuesMap.get(key);
             put(key, value);
         }
-
     }
 
     public Map<String, Class<?>> getFields() throws IllegalAccessException {
@@ -154,7 +153,7 @@ public class DynmicVO {
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    public Object getValue(String property) throws NoSuchFieldException, IllegalAccessException {
+    public Object get(String property) throws NoSuchFieldException, IllegalAccessException {
         Field declaredField = clazz.getDeclaredField("$cglib_prop_" + property);
         declaredField.setAccessible(true);
         Object value = declaredField.get(dynamicBean);

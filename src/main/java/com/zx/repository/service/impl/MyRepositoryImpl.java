@@ -83,7 +83,7 @@ public class MyRepositoryImpl<T, ID extends Serializable>
                 Field field = idAnnoation.get(0);
 
                 strings.stream().forEach(id -> {
-                    T object = this.findByAttr(field.getName(), id);
+                    T object = this.findOneByAttr(field.getName(), id);
                     if (object != null) {
                         reflectUtil.setValue(object, "valid", 0);
                         reflectUtil.setValue(object, "gmtModified", utils.getNowDate());
@@ -95,7 +95,7 @@ public class MyRepositoryImpl<T, ID extends Serializable>
     }
 
     @Override
-    public T findByAttr(String attr, String condition) {
+    public T findOneByAttr(String attr, String condition) {
         Specification<T> specification = reflectUtil.createOneSpecification(attr, condition);
         Optional<T> result = this.findOne(specification);
 
@@ -107,14 +107,21 @@ public class MyRepositoryImpl<T, ID extends Serializable>
     }
 
     @Override
+    public List<T> findByAttr(String attr, String condition) {
+        Specification<T> specification = reflectUtil.createOneSpecification(attr, condition);
+        List<T> all = this.findAll(specification);
+        return all;
+    }
+
+    @Override
     public List<T> findByAttrs(String attr, String conditions) {
         List<T> results = new ArrayList<>();
-        if(!StringUtils.isEmpty(conditions)){
+        if (!StringUtils.isEmpty(conditions)) {
             List<String> cons = Arrays.asList(conditions.split(","));
             cons.stream().forEach(condition -> {
-                T byAttr = findByAttr(attr, condition);
+                List<T> byAttr = findByAttr(attr, condition);
                 if (byAttr != null) {
-                    results.add(byAttr);
+                    results.addAll(byAttr);
                 }
             });
         }

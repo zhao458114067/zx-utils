@@ -52,13 +52,22 @@ public interface MyRepository<T, ID extends Serializable> extends JpaRepository<
      * @param condition 对应条件（1、罐1、TK1000 ...）
      * @return
      */
-    T findByAttr(String attr, String condition);
+    T findOneByAttr(String attr, String condition);
+
+    /**
+     * 全匹配查询
+     *
+     * @param attr      属性名称（id、name、code ...）
+     * @param condition 对应条件（1、罐1、TK1000 ...）
+     * @return
+     */
+    List<T> findByAttr(String attr, String condition);
 
     /**
      * 全匹配查询实体
      *
-     * @param attr       属性名称，一般是唯一标识（id、code ...）
-     * @param conditions 对应条件,list
+     * @param attr       属性名称（id、code ...）
+     * @param conditions 对应条件,逗号隔开
      * @return
      */
     List<T> findByAttrs(String attr, String conditions);
