@@ -24,18 +24,18 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author: zhaoxu
- * @description:
+ * @author : zhaoxu
  */
 @Component
 public class HttpClientUtil {
     /**
      * get请求,params可为null,headers可为null
      *
-     * @param headers
-     * @param url
-     * @return
-     * @throws IOException
+     * @param headers 请求头
+     * @param url 地址
+     * @param params 参数
+     * @return 字符串
+     * @throws IOException io出错
      */
     public static String get(Map<String, String> headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -72,11 +72,11 @@ public class HttpClientUtil {
     /**
      * post请求,params可为null,headers可为null
      *
-     * @param headers
-     * @param url
-     * @param params
-     * @return
-     * @throws IOException
+     * @param headers 请求头
+     * @param url 地址
+     * @param params 参数
+     * @return 字符串
+     * @throws IOException io出错
      */
     public static String post(Map<String, String> headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -103,10 +103,11 @@ public class HttpClientUtil {
     /**
      * delete,params可为null,headers可为null
      *
-     * @param url
-     * @param params
-     * @return
-     * @throws IOException
+     * @param headers 请求头
+     * @param url 地址
+     * @param params 参数
+     * @return 字符串
+     * @throws IOException io出错
      */
     public static String delete(Map<String, String> headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -133,10 +134,11 @@ public class HttpClientUtil {
     /**
      * put,params可为null,headers可为null
      *
-     * @param url
-     * @param params
-     * @return
-     * @throws IOException
+     * @param headers 请求头
+     * @param url 地址
+     * @param params 参数
+     * @return 字符串
+     * @throws IOException io出错
      */
     public static String put(Map<String, String> headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();

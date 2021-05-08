@@ -15,8 +15,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @author: zhaoxu
- * @description:
+ * 动态vo类
+ * @author : zhaoxu
  */
 @Data
 @NoArgsConstructor
@@ -48,8 +48,8 @@ public class DynmicVO {
     /**
      * 获取所有属性值
      *
-     * @return
-     * @throws IllegalAccessException
+     * @return map
+     * @throws IllegalAccessException 错误
      */
     public Map<String, Object> getValues() throws IllegalAccessException {
         Map<String, Object> fieldValuesMap = new HashMap(16);
@@ -69,10 +69,10 @@ public class DynmicVO {
     /**
      * 设置属性值，不存在就添加
      *
-     * @param property
-     * @param value
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
+     * @param property 设置的属性
+     * @param value 值
+     * @throws NoSuchFieldException 没有字段
+     * @throws IllegalAccessException 出错
      */
     public void put(String property, Object value) throws IllegalAccessException, NoSuchFieldException {
         Field declaredField;
@@ -105,9 +105,9 @@ public class DynmicVO {
     /**
      * 在已有的实体上添加属性
      *
-     * @param object
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
+     * @param object 对象
+     * @throws NoSuchFieldException 没有字段
+     * @throws IllegalAccessException 反射出错
      */
     public void putAll(Object object) throws IllegalAccessException, NoSuchFieldException {
         Class<?> clazz = object.getClass();
@@ -148,10 +148,10 @@ public class DynmicVO {
     /**
      * 获取属性值
      *
-     * @param property
-     * @return
-     * @throws NoSuchFieldException
-     * @throws IllegalAccessException
+     * @param property 设置的字段
+     * @return 对象
+     * @throws NoSuchFieldException 没有字段
+     * @throws IllegalAccessException 反射错误
      */
     public Object get(String property) throws NoSuchFieldException, IllegalAccessException {
         Field declaredField = clazz.getDeclaredField("$cglib_prop_" + property);

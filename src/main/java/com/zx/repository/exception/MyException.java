@@ -1,8 +1,7 @@
 package com.zx.repository.exception;
 
 /**
- * @author: zhaoxu
- * @date:
+ * @author : zhaoxu
  */
 public class MyException extends RuntimeException {
     private Integer code;

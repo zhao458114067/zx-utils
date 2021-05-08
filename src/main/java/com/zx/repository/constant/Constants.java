@@ -1,8 +1,8 @@
 package com.zx.repository.constant;
 
 /**
- * @author: zhaoxu
- * @description:
+ * 全局变量
+ * @author : zhaoxu
  */
 public interface Constants {
     String CURRENT = "current";
@@ -12,4 +12,5 @@ public interface Constants {
     String EMPTY_SORTER = "{}";
     String ASCEND = "ascend";
     String QUESTION = "?";
+    String POINT = ".";
 }

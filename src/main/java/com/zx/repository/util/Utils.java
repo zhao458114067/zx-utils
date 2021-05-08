@@ -9,21 +9,20 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.net.UnknownHostException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +40,7 @@ public class Utils {
 
     /**
      * 获取当前格式化时间
+     * @return Date
      */
     public Date getNowDate() {
         Date now = new Date();
@@ -57,6 +57,9 @@ public class Utils {
 
     /**
      * 从输入流读取完整字符串
+     * @param inputStream inputStream
+     * @return String
+     * @throws IOException IOException
      */
     public String getStringFromInputStream(InputStream inputStream) throws IOException {
         String s = "";
@@ -79,8 +82,7 @@ public class Utils {
     /**
      * 获取当前ip
      *
-     * @return
-     * @throws UnknownHostException
+     * @return String
      */
     public String getIp() {
         try {
@@ -109,8 +111,8 @@ public class Utils {
     /**
      * time时间戳转Date
      *
-     * @param time
-     * @return
+     * @param time time字符串
+     * @return Date
      */
     public Date timeToDate(String time) {
         SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -127,8 +129,8 @@ public class Utils {
     /**
      * 日期字符串转String型Time
      *
-     * @param date
-     * @return
+     * @param date date字符串
+     * @return String
      */
     public String stringToTime(String date) {
         SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -144,9 +146,9 @@ public class Utils {
     /**
      * 表格排序
      *
-     * @param tableMap
+     * @param tableMap tableMap
      * @param sorterBy 默认按此属性排序
-     * @return
+     * @return Sort
      */
     public Sort sortAttr(Map<String, String> tableMap, String sorterBy) {
         Sort sort;
@@ -168,8 +170,8 @@ public class Utils {
     /**
      * 利用正则表达式判断字符串是否是数字
      *
-     * @param str
-     * @return
+     * @param str str
+     * @return boolean
      */
     public boolean isNumeric(String str) {
         Matcher isNum = numberPattern.matcher(str);
@@ -182,10 +184,10 @@ public class Utils {
     /**
      * 判断指定的单元格是否是合并单元格
      *
-     * @param sheet
+     * @param sheet sheet
      * @param row    行下标
      * @param column 列下标
-     * @return
+     * @return boolean
      */
     public boolean isMergedRegion(Sheet sheet, int row, int column) {
         int sheetMergeCount = sheet.getNumMergedRegions();
@@ -207,10 +209,10 @@ public class Utils {
     /**
      * 获取合并单元格的值
      *
-     * @param sheet
-     * @param row
-     * @param column
-     * @return
+     * @param sheet sheet
+     * @param row row
+     * @param column column
+     * @return String
      */
     public String getMergedRegionValue(Sheet sheet, int row, int column) {
         int sheetMergeCount = sheet.getNumMergedRegions();
@@ -234,8 +236,9 @@ public class Utils {
 
     /**
      * 按行读取全部文件数据
-     *
-     * @param strFile
+     * @param strFile strFile
+     * @return StringBuffer
+     * @throws IOException IOException
      */
     public StringBuffer readFile(String strFile) throws IOException {
         StringBuffer strSb = new StringBuffer();
@@ -253,9 +256,9 @@ public class Utils {
     /**
      * 写入文件
      *
-     * @param fileName
-     * @param s
-     * @throws IOException
+     * @param fileName fileName
+     * @param s 内容
+     * @throws IOException IOException
      */
     public void writeToFile(String fileName, String s) throws IOException {
         File f1 = new File(fileName);
@@ -316,37 +319,11 @@ public class Utils {
     }
 
     /**
-     * 获取
-     *
-     * @param objectClass
-     * @param annoClass
-     * @return
-     */
-    public List<Field> getTargetAnnoation(Class<?> objectClass, Class<? extends Annotation> annoClass) {
-        List<Field> fields = new ArrayList<>();
-        Field[] declaredFields = objectClass.getDeclaredFields();
-        for (Field field : declaredFields) {
-            field.setAccessible(true);
-            //是否拥有指定注解类，如果没有就返回null， 有的话则返回这个注解类对象
-            if (!field.isAnnotationPresent(annoClass)) {
-                continue;
-            } else {
-                fields.add(field);
-            }
-        }
-        if (!CollectionUtils.isEmpty(fields)) {
-            return fields;
-        } else {
-            return null;
-        }
-    }
-
-    /**
      * 转换字符串
      *
-     * @param str
-     * @param tClass
-     * @return
+     * @param str 字符串
+     * @param tClass 要转的类型
+     * @return Object
      */
     public Object covertStr(String str, Class<?> tClass) {
         if (tClass == Long.class) {

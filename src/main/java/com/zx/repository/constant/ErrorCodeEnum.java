@@ -1,8 +1,8 @@
 package com.zx.repository.constant;
 
-/***
- * @author: zhaoxu
- * @description:
+/**
+ * 错误码
+ * @author : zhaoxu
  */
 public enum ErrorCodeEnum {
     // 1000, "参数错误"
