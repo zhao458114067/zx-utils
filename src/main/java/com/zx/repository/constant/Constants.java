@@ -2,6 +2,7 @@ package com.zx.repository.constant;
 
 /**
  * 全局变量
+ *
  * @author : zhaoxu
  */
 public interface Constants {
@@ -13,4 +14,6 @@ public interface Constants {
     String ASCEND = "ascend";
     String QUESTION = "?";
     String POINT = ".";
+    String UNKNOWN = "unknown";
+    String COMMA = ",";
 }

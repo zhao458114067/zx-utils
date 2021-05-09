@@ -40,6 +40,7 @@ public class Utils {
 
     /**
      * 获取当前格式化时间
+     *
      * @return Date
      */
     public Date getNowDate() {
@@ -57,6 +58,7 @@ public class Utils {
 
     /**
      * 从输入流读取完整字符串
+     *
      * @param inputStream inputStream
      * @return String
      * @throws IOException IOException
@@ -184,7 +186,7 @@ public class Utils {
     /**
      * 判断指定的单元格是否是合并单元格
      *
-     * @param sheet sheet
+     * @param sheet  sheet
      * @param row    行下标
      * @param column 列下标
      * @return boolean
@@ -209,8 +211,8 @@ public class Utils {
     /**
      * 获取合并单元格的值
      *
-     * @param sheet sheet
-     * @param row row
+     * @param sheet  sheet
+     * @param row    row
      * @param column column
      * @return String
      */
@@ -236,6 +238,7 @@ public class Utils {
 
     /**
      * 按行读取全部文件数据
+     *
      * @param strFile strFile
      * @return StringBuffer
      * @throws IOException IOException
@@ -257,7 +260,7 @@ public class Utils {
      * 写入文件
      *
      * @param fileName fileName
-     * @param s 内容
+     * @param s        内容
      * @throws IOException IOException
      */
     public void writeToFile(String fileName, String s) throws IOException {
@@ -284,33 +287,33 @@ public class Utils {
     private String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         System.out.println("x-forwarded-for ip: " + ip);
-        if (ip != null && ip.length() != 0 && !"unknown".equalsIgnoreCase(ip)) {
+        if (ip != null && ip.length() != 0 && !Constants.UNKNOWN.equalsIgnoreCase(ip)) {
             // 多次反向代理后会有多个ip值，第一个ip才是真实ip
-            if (ip.indexOf(",") != -1) {
+            if (ip.indexOf(Constants.COMMA) != -1) {
                 ip = ip.split(",")[0];
             }
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
             System.out.println("Proxy-Client-IP ip: " + ip);
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getHeader("WL-Proxy-Client-IP");
             System.out.println("WL-Proxy-Client-IP ip: " + ip);
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getHeader("HTTP_CLIENT_IP");
             System.out.println("HTTP_CLIENT_IP ip: " + ip);
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getHeader("HTTP_X_FORWARDED_FOR");
             System.out.println("HTTP_X_FORWARDED_FOR ip: " + ip);
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getHeader("X-Real-IP");
             System.out.println("X-Real-IP ip: " + ip);
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+        if (ip == null || ip.length() == 0 || Constants.UNKNOWN.equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
             System.out.println("getRemoteAddr ip: " + ip);
         }
@@ -321,7 +324,7 @@ public class Utils {
     /**
      * 转换字符串
      *
-     * @param str 字符串
+     * @param str    字符串
      * @param tClass 要转的类型
      * @return Object
      */
