@@ -1,4 +1,4 @@
-package com.zx.repository.exception;
+package com.zx.util.exception;
 
 /**
  * @author : zhaoxu

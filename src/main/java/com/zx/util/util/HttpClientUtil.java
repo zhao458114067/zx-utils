@@ -1,7 +1,7 @@
-package com.zx.repository.util;
+package com.zx.util.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.zx.repository.constant.Constants;
+import com.zx.util.constant.Constants;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.entity.UrlEncodedFormEntity;

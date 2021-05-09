@@ -1,4 +1,4 @@
-package com.zx.repository.service;
+package com.zx.util.service;
 
 import java.util.List;
 import java.util.Map;

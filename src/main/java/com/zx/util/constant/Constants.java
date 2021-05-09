@@ -1,4 +1,4 @@
-package com.zx.repository.constant;
+package com.zx.util.constant;
 
 /**
  * 全局变量

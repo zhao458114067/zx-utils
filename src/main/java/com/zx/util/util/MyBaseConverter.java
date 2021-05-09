@@ -1,4 +1,4 @@
-package com.zx.repository.util;
+package com.zx.util.util;
 
 import org.dozer.DozerBeanMapperBuilder;
 import org.dozer.Mapper;

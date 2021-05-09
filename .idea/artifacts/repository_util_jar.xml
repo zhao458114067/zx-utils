@@ -2,7 +2,7 @@
   <artifact type="jar" name="repository-util:jar">
     <output-path>$PROJECT_DIR$/out/artifacts/repository_util_jar</output-path>
     <root id="archive" name="repository-util.jar">
-      <element id="module-output" name="repository-util" />
+      <element id="module-output" name="zx-util" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/apache/poi/poi-ooxml-schemas/3.17/poi-ooxml-schemas-3.17.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/springframework/spring-core/5.1.6.RELEASE/spring-core-5.1.6.RELEASE.jar" path-in-jar="/" />
       <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/slf4j/slf4j-api/1.7.25/slf4j-api-1.7.25.jar" path-in-jar="/" />

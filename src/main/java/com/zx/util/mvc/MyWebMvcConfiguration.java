@@ -1,4 +1,4 @@
-package com.zx.repository.mvc;
+package com.zx.util.mvc;
 
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcRegistrations;
 import org.springframework.context.annotation.Configuration;

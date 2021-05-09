@@ -1,8 +1,8 @@
-package com.zx.repository.util;
+package com.zx.util.util;
 
-import com.zx.repository.constant.Constants;
-import com.zx.repository.constant.ErrorCodeEnum;
-import com.zx.repository.exception.MyException;
+import com.zx.util.constant.Constants;
+import com.zx.util.constant.ErrorCodeEnum;
+import com.zx.util.exception.MyException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;

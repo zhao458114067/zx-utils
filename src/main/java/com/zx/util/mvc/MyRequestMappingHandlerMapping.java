@@ -1,6 +1,6 @@
-package com.zx.repository.mvc;
+package com.zx.util.mvc;
 
-import com.zx.repository.annotation.ModelMapping;
+import com.zx.util.annotation.ModelMapping;
 import lombok.SneakyThrows;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
@@ -34,7 +34,7 @@ public class MyRequestMappingHandlerMapping extends RequestMappingHandlerMapping
 
     @Override
     protected RequestMappingInfo getMappingForMethod(Method method, Class handlerType) {
-        RequestMappingInfo info = null;
+        RequestMappingInfo info = super.getMappingForMethod(method, handlerType);
         // 读取方法上的RequestMapping注解信息
         RequestMapping methodAnnotation = method.getDeclaredAnnotation(RequestMapping.class);
         if (method.isAnnotationPresent(ModelMapping.class)) {

@@ -1,8 +1,8 @@
-package com.zx.repository.controller;
+package com.zx.util.controller;
 
-import com.zx.repository.annotation.ModelMapping;
-import com.zx.repository.service.MyRepository;
-import com.zx.repository.util.MyBaseConverter;
+import com.zx.util.annotation.ModelMapping;
+import com.zx.util.service.MyRepository;
+import com.zx.util.util.MyBaseConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
@@ -18,7 +18,8 @@ import java.util.Map;
  */
 @Component
 public class MyControllerModel<S> {
-    public MyRepository myRepository;
+    @Autowired
+    MyRepository myRepository;
 
     @Autowired
     MyBaseConverter myBaseConverter;

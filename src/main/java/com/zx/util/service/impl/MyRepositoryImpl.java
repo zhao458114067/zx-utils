@@ -1,9 +1,9 @@
-package com.zx.repository.service.impl;
+package com.zx.util.service.impl;
 
-import com.zx.repository.constant.Constants;
-import com.zx.repository.service.MyRepository;
-import com.zx.repository.util.ReflectUtil;
-import com.zx.repository.util.Utils;
+import com.zx.util.constant.Constants;
+import com.zx.util.service.MyRepository;
+import com.zx.util.util.ReflectUtil;
+import com.zx.util.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
