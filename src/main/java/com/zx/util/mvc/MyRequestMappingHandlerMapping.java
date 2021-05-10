@@ -49,12 +49,15 @@ public class MyRequestMappingHandlerMapping extends RequestMappingHandlerMapping
             if (CollectionUtils.isEmpty(strings)) {
                 return null;
             }
+            String controllerName = strings.get(strings.size() - 1);
+            String serviceApi = Character.toLowerCase(controllerName.charAt(0)) + controllerName.split("controller")[0].substring(1);
+
+            RequestCondition typeCondition = getCustomTypeCondition(handlerType);
             if (typeAnnotation != null) {
-                String controllerName = strings.get(strings.size() - 1);
-                String serviceApi = controllerName.split("controller")[0];
-                RequestCondition typeCondition = getCustomTypeCondition(handlerType);
                 // 生成类上的匹配条件,并合并方法上的
                 info = createRequestMappingInfo(typeAnnotation, typeCondition).combine(RequestMappingInfo.paths(serviceApi).build().combine(info));
+            } else {
+                info = RequestMappingInfo.paths(serviceApi).build().combine(info);
             }
         }
         return info;

@@ -3,26 +3,29 @@ package com.zx.util.controller;
 import com.zx.util.annotation.ModelMapping;
 import com.zx.util.service.MyRepository;
 import com.zx.util.util.MyBaseConverter;
+import com.zx.util.util.SpringManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 /**
- * @author : zhaoxu
+ * @author: zhaoxu
  */
-@Component
-public class MyControllerModel<S> {
-    @Autowired
-    MyRepository myRepository;
+public class MyControllerModel<S> implements ApplicationRunner {
+    public MyRepository myRepository;
 
-    @Autowired
-    MyBaseConverter myBaseConverter;
+    Type[] actualTypeArguments;
+
+    MyBaseConverter myBaseConverter = new MyBaseConverter();
 
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ModelMapping
@@ -58,8 +61,16 @@ public class MyControllerModel<S> {
     @ModelMapping
     public Map<String, Object> findByPage(@RequestParam Map tableMap) {
         Page byPage = myRepository.findByPage(tableMap);
-        ParameterizedType paramType = (ParameterizedType) this.getClass().getGenericSuperclass();
-        Type[] actualTypeArguments = paramType.getActualTypeArguments();
         return myBaseConverter.convertMultiObjectToMap(byPage, (Class<?>) actualTypeArguments[0]);
+    }
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+        Class<? extends MyControllerModel> aClass = this.getClass();
+        Class<?> superclass = this.getClass().getSuperclass();
+        List<String> strings = Arrays.asList(aClass.getName().split("\\."));
+        String controllerName = strings.get(strings.size() - 1);
+        String serviceApi = Character.toLowerCase(controllerName.charAt(0)) + controllerName.split("Controller")[0].substring(1);
+        this.myRepository = (MyRepository) SpringManager.getBean(serviceApi + "Repository");
     }
 }
