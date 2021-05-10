@@ -16,4 +16,5 @@ public interface Constants {
     String POINT = ".";
     String UNKNOWN = "unknown";
     String COMMA = ",";
+    String LIST_TYPE = "list";
 }
