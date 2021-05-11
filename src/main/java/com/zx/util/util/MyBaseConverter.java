@@ -1,6 +1,6 @@
 package com.zx.util.util;
 
-import org.dozer.DozerBeanMapperBuilder;
+import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.*;
 @Component
 public class MyBaseConverter {
     private static final Logger log = LoggerFactory.getLogger(MyBaseConverter.class);
-    Mapper beanMapper = DozerBeanMapperBuilder.buildDefault();
+    Mapper beanMapper = new DozerBeanMapper();
 
     public MyBaseConverter() {
     }
@@ -44,7 +44,7 @@ public class MyBaseConverter {
             List<D> toList = new ArrayList();
             Iterator var4 = sourceList.iterator();
 
-            while(var4.hasNext()) {
+            while (var4.hasNext()) {
                 Object src = var4.next();
                 toList.add(this.convertSingleObject(src, destClass));
             }
@@ -59,13 +59,13 @@ public class MyBaseConverter {
         if (srcPages != null && srcPages.getContent() != null) {
             Iterator var6 = srcPages.getContent().iterator();
 
-            while(var6.hasNext()) {
+            while (var6.hasNext()) {
                 Object src = var6.next();
                 destList.add(this.convertSingleObject(src, destClass));
             }
         }
 
-        destMap.put("total",srcPages.getTotalElements());
+        destMap.put("total", srcPages.getTotalElements());
         destMap.put("data", destList);
         destMap.put("pageSize", srcPages.getSize());
         destMap.put("current", srcPages.getNumber() + 1);
