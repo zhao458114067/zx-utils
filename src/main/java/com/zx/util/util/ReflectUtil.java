@@ -185,9 +185,8 @@ public class ReflectUtil {
                     predicates.add(cb.equal(root.get(Constants.VALID), condition));
                 }
                 else{
-                    predicates.add(cb.equal(root.get(Constants.VALID), 0));
+                    predicates.add(cb.equal(root.get(Constants.VALID), 1));
                 }
-
             } catch (Exception e) {
                 logger.warn("没有找到属性：valid");
             }
