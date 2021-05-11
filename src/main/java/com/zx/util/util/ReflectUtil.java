@@ -181,7 +181,13 @@ public class ReflectUtil {
 
             //未删除的数据
             try {
-                predicates.add(cb.equal(root.get(Constants.VALID), 1));
+                if(Constants.VALID.equals(attr)){
+                    predicates.add(cb.equal(root.get(Constants.VALID), condition));
+                }
+                else{
+                    predicates.add(cb.equal(root.get(Constants.VALID), 0));
+                }
+
             } catch (Exception e) {
                 logger.warn("没有找到属性：valid");
             }
