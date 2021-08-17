@@ -16,6 +16,7 @@ import java.util.Map;
 
 /**
  * 动态vo类
+ *
  * @author : zhaoxu
  */
 @Data
@@ -70,8 +71,8 @@ public class DynmicVO {
      * 设置属性值，不存在就添加
      *
      * @param property 设置的属性
-     * @param value 值
-     * @throws NoSuchFieldException 没有字段
+     * @param value    值
+     * @throws NoSuchFieldException   没有字段
      * @throws IllegalAccessException 出错
      */
     public void put(String property, Object value) throws IllegalAccessException, NoSuchFieldException {
@@ -106,7 +107,7 @@ public class DynmicVO {
      * 在已有的实体上添加属性
      *
      * @param object 对象
-     * @throws NoSuchFieldException 没有字段
+     * @throws NoSuchFieldException   没有字段
      * @throws IllegalAccessException 反射出错
      */
     public void putAll(Object object) throws IllegalAccessException, NoSuchFieldException {
@@ -150,14 +151,14 @@ public class DynmicVO {
      *
      * @param property 设置的字段
      * @return 对象
-     * @throws NoSuchFieldException 没有字段
+     * @throws NoSuchFieldException   没有字段
      * @throws IllegalAccessException 反射错误
      */
-    public Object get(String property) throws NoSuchFieldException, IllegalAccessException {
+    public <E extends Object> E get(String property) throws NoSuchFieldException, IllegalAccessException {
         Field declaredField = clazz.getDeclaredField("$cglib_prop_" + property);
         declaredField.setAccessible(true);
-        Object value = declaredField.get(dynamicBean);
-        return value;
+        Class<?> type = declaredField.getType();
+        return (E) declaredField.get(dynamicBean);
     }
 
     public Object getEntity() {
