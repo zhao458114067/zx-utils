@@ -19,6 +19,7 @@ import java.util.*;
 
 /**
  * 反射封装工具类
+ *
  * @author : zhaoxu
  */
 @Component
@@ -32,7 +33,7 @@ public class ReflectUtil {
      * @param clazz       要查询的实体类或vo类
      * @param excludeAttr 不使用模糊搜索的字符串属性
      * @param map         外键关联查询
-     * @param <S> 泛型
+     * @param <S>         泛型
      * @return Specification
      */
     @Deprecated
@@ -71,7 +72,7 @@ public class ReflectUtil {
                                 .replaceAll("_", "\\\\_").replaceAll("%", "\\\\%") + "%";
                         predicates.add(cb.like(root.get(fieldName), queryFieldName));
                     } else {
-                        predicates.add(cb.equal(root.get(fieldName), tableMap.get(fieldName)));
+                        predicates.add(cb.and(root.get(fieldName).in(Arrays.asList(tableMap.get(fieldName).split(",")))));
                     }
                 }
             }
@@ -88,7 +89,7 @@ public class ReflectUtil {
                         String joinKey = mappingItr.next().toString();
                         String joinAttr = mapping.get(joinKey).toString();
                         if (!StringUtils.isEmpty(tableMap.get(joinKey))) {
-                            predicates.add(cb.equal(join.get(joinAttr), tableMap.get(joinKey)));
+                            predicates.add(cb.and(join.get(joinAttr).in(Arrays.asList(tableMap.get(joinKey).split(",")))));
                         }
                     }
                 }
@@ -106,7 +107,7 @@ public class ReflectUtil {
      * @param tableMap    属性参数
      * @param clazz       要查询的实体类或vo类
      * @param excludeAttr 不使用模糊搜索的字符串属性
-     * @param <S> 泛型
+     * @param <S>         泛型
      * @return Specification
      */
     public <S> Specification<S> createSpecification(Map<String, String> tableMap, Class clazz, List<String> excludeAttr) {
@@ -144,19 +145,17 @@ public class ReflectUtil {
                                 .replaceAll("_", "\\\\_").replaceAll("%", "\\\\%") + "%";
                         predicates.add(cb.like(root.get(fieldName), queryFieldName));
                     } else {
-                        predicates.add(cb.equal(root.get(fieldName), tableMap.get(fieldName)));
+                        predicates.add(cb.and(root.get(fieldName).in(Arrays.asList(tableMap.get(fieldName).split(",")))));
                     }
                 }
             }
 
             //外键关联查询，新，可以省去map参数
             if (!CollectionUtils.isEmpty(tableMap)) {
-                Iterator<String> iterator = tableMap.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String next = iterator.next();
-                    if (next.contains(".")) {
+                for (Map.Entry<String, String> entry : tableMap.entrySet()) {
+                    if (entry.getKey().contains(".")) {
                         //递归解析真实的path
-                        predicates.add(cb.equal(getRootPath(root, null, next), tableMap.get(next)));
+                        predicates.add(cb.and(getRootPath(root, null, entry.getKey()).in(Arrays.asList(entry.getValue().split(",")))));
                     }
                 }
             }
@@ -170,9 +169,9 @@ public class ReflectUtil {
     /**
      * 指定条件查询
      *
-     * @param attr 查询的字段
+     * @param attr      查询的字段
      * @param condition 条件
-     * @param <S> 泛型
+     * @param <S>       泛型
      * @return Specification
      */
     public <S> Specification<S> createOneSpecification(String attr, String condition) {
@@ -181,10 +180,9 @@ public class ReflectUtil {
 
             //未删除的数据
             try {
-                if(Constants.VALID.equals(attr)){
+                if (Constants.VALID.equals(attr)) {
                     predicates.add(cb.equal(root.get(Constants.VALID), condition));
-                }
-                else{
+                } else {
                     predicates.add(cb.equal(root.get(Constants.VALID), 1));
                 }
             } catch (Exception e) {
@@ -209,10 +207,10 @@ public class ReflectUtil {
     /**
      * 获取关联查询真实path
      *
-     * @param root root
-     * @param path path
+     * @param root    root
+     * @param path    path
      * @param allPath allPath
-     * @param <S> S
+     * @param <S>     S
      * @return Path
      */
     public <S> Path getRootPath(Root<S> root, Path path, String allPath) {
@@ -255,13 +253,13 @@ public class ReflectUtil {
     /**
      * 通过方法名动态执行某个方法
      *
-     * @param object object
+     * @param object     object
      * @param methodName 方法名
      * @param parameters 参数
      * @return Object
      * @throws InvocationTargetException InvocationTargetException
-     * @throws IllegalAccessException IllegalAccessException
-     * @throws NoSuchMethodException NoSuchMethodException
+     * @throws IllegalAccessException    IllegalAccessException
+     * @throws NoSuchMethodException     NoSuchMethodException
      */
     public Object executeMethod(Object object, String methodName, Object... parameters) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Class<?> clazz = object.getClass();
@@ -277,6 +275,7 @@ public class ReflectUtil {
 
     /**
      * 获取所有属性值
+     *
      * @param object object
      * @return Map
      * @throws IllegalAccessException IllegalAccessException
@@ -298,8 +297,8 @@ public class ReflectUtil {
      * 设置属性值
      *
      * @param property 设置的字段
-     * @param value 值
-     * @param object object
+     * @param value    值
+     * @param object   object
      * @return Boolean
      */
     public Boolean setValue(Object object, String property, Object value) {
@@ -338,6 +337,7 @@ public class ReflectUtil {
 
     /**
      * 获取所有属性值
+     *
      * @param object object
      * @return Map
      * @throws IllegalAccessException IllegalAccessException
@@ -361,7 +361,7 @@ public class ReflectUtil {
      * 获取拥有指定注解的字段
      *
      * @param objectClass 对象
-     * @param annoClass 查询的注解
+     * @param annoClass   查询的注解
      * @return List
      */
     public List<Field> getTargetAnnoation(Class<?> objectClass, Class<? extends Annotation> annoClass) {
