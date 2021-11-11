@@ -45,12 +45,12 @@ public class MyRequestMappingHandlerMapping extends RequestMappingHandlerMapping
             RequestMapping typeAnnotation = AnnotationUtils.findAnnotation(handlerType, RequestMapping.class);
 
             // 生成类上的匹配条件,并合并方法上的
-            List<String> strings = Arrays.asList(handlerType.getName().toLowerCase().split("\\."));
+            List<String> strings = Arrays.asList(handlerType.getName().split("\\."));
             if (CollectionUtils.isEmpty(strings)) {
                 return null;
             }
             String controllerName = strings.get(strings.size() - 1);
-            String serviceApi = Character.toLowerCase(controllerName.charAt(0)) + controllerName.split("controller")[0].substring(1);
+            String serviceApi = Character.toLowerCase(controllerName.charAt(0)) + controllerName.split("Controller")[0].substring(1);
 
             RequestCondition typeCondition = getCustomTypeCondition(handlerType);
             if (typeAnnotation != null) {
