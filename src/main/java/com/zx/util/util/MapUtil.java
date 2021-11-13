@@ -15,7 +15,7 @@ public class MapUtil {
     /**
      * 内部接口
      */
-    protected interface Comparetor<T> {
+    public interface Comparetor<T> {
         /**
          * 比较函数
          *
