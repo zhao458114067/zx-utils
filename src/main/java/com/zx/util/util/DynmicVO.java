@@ -1,10 +1,8 @@
-package com.zx.util.util;
+package com.supcon.mare.tankinfo.controller.vo;
 
-/**
- * @author: zhaoxu
- * @date: 2021/4/30 23:42
- */
-
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import net.sf.cglib.beans.BeanGenerator;
@@ -15,9 +13,8 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * 动态vo类
- *
- * @author : zhaoxu
+ * @author: zhaoxu
+ * @description:
  */
 @Data
 @NoArgsConstructor
@@ -25,9 +22,9 @@ public class DynmicVO {
 
     Object dynamicBean;
 
-    Class clazz;
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
-    ReflectUtil reflectUtil = new ReflectUtil();
+    Class clazz;
 
     public DynmicVO(Map dynAttrMap) {
         this.dynamicBean = generateBean(dynAttrMap);
@@ -35,8 +32,8 @@ public class DynmicVO {
     }
 
     public DynmicVO(Object object) throws IllegalAccessException, NoSuchFieldException {
-        dynamicBean = generateBean(reflectUtil.getFields(object));
-        Map<String, Object> values = reflectUtil.getValues(object);
+        dynamicBean = generateBean(getFields(object));
+        Map<String, Object> values = getValues(object);
         Iterator<String> iterator = values.keySet().iterator();
         while (iterator.hasNext()) {
             String key = iterator.next();
@@ -46,14 +43,27 @@ public class DynmicVO {
         clazz = dynamicBean.getClass();
     }
 
+    public static DynmicVO parseMap(Map<String, Object> targetMap) throws NoSuchFieldException, IllegalAccessException {
+        DynmicVO dynmicVO = new DynmicVO();
+        for (Map.Entry<String, Object> entry : targetMap.entrySet()) {
+            dynmicVO.put(entry.getKey(), entry.getValue());
+        }
+        return dynmicVO;
+    }
+
+    public static DynmicVO parseString(String jsonString) throws NoSuchFieldException, IllegalAccessException {
+        JSONObject jsonObject = JSONObject.parseObject(jsonString);
+        return parseMap(jsonObject);
+    }
+
     /**
      * 获取所有属性值
      *
-     * @return map
-     * @throws IllegalAccessException 错误
+     * @return
+     * @throws IllegalAccessException
      */
     public Map<String, Object> getValues() throws IllegalAccessException {
-        Map<String, Object> fieldValuesMap = new HashMap(16);
+        Map<String, Object> fieldValuesMap = new HashMap<>(16);
         if (clazz != null) {
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
@@ -66,14 +76,34 @@ public class DynmicVO {
         return fieldValuesMap;
     }
 
+    /**
+     * 获取所有属性值
+     *
+     * @return
+     * @throws IllegalAccessException
+     */
+    public Map<String, Object> getValues(Object object) throws IllegalAccessException {
+        Map<String, Object> fieldValuesMap = new HashMap<>(16);
+        Class<?> clazz = object.getClass();
+        if (clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object fieldValue = field.get(object);
+                fieldValuesMap.put(field.getName(), fieldValue);
+            }
+            return fieldValuesMap;
+        }
+        return fieldValuesMap;
+    }
 
     /**
      * 设置属性值，不存在就添加
      *
-     * @param property 设置的属性
-     * @param value    值
-     * @throws NoSuchFieldException   没有字段
-     * @throws IllegalAccessException 出错
+     * @param property
+     * @param value
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
      */
     public void put(String property, Object value) throws IllegalAccessException, NoSuchFieldException {
         Field declaredField;
@@ -106,15 +136,15 @@ public class DynmicVO {
     /**
      * 在已有的实体上添加属性
      *
-     * @param object 对象
-     * @throws NoSuchFieldException   没有字段
-     * @throws IllegalAccessException 反射出错
+     * @param object
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
      */
     public void putAll(Object object) throws IllegalAccessException, NoSuchFieldException {
         Class<?> clazz = object.getClass();
         Field[] declaredFields = clazz.getDeclaredFields();
-        Map<String, Object> fieldValuesMap = new HashMap(16);
-        Map<String, Object> fieldTypeMap = new HashMap(16);
+        Map<String, Object> fieldValuesMap = new HashMap<>(16);
+        Map<String, Object> fieldTypeMap = new HashMap<>(16);
         for (Field field : declaredFields) {
             field.setAccessible(true);
             Object fieldValue = field.get(object);
@@ -147,19 +177,52 @@ public class DynmicVO {
     }
 
     /**
+     * 获取对象所有属性及对应的类别
+     *
+     * @param object
+     * @return
+     * @throws IllegalAccessException
+     */
+    public Map<String, Class<?>> getFields(Object object) throws IllegalAccessException {
+        Class<?> clazz = object.getClass();
+        Map<String, Class<?>> attrMap = new HashMap<>(16);
+        if (clazz != null) {
+            Iterator<String> iterator = getValues(object).keySet().iterator();
+
+            while (iterator.hasNext()) {
+                attrMap.put(iterator.next(), Object.class);
+            }
+        }
+        return attrMap;
+    }
+
+    /**
      * 获取属性值
      *
      * @param property 设置的字段
-     * @return 对象
+     * @return JsonNode对象
+     */
+    public JsonNode get(String property) {
+        JsonNode jsonNode = objectMapper.valueToTree(dynamicBean);
+        return jsonNode.get(property);
+    }
+
+    /**
+     * 获取属性值
+     *
+     * @param property 设置的字段
+     * @return 属性对应的对象
      * @throws NoSuchFieldException   没有字段
      * @throws IllegalAccessException 反射错误
      */
-    public <E extends Object> E get(String property) throws NoSuchFieldException, IllegalAccessException {
+    @SuppressWarnings("unchecked")
+    public <E extends Object> E getToObject(String property) throws NoSuchFieldException, IllegalAccessException {
         Field declaredField = clazz.getDeclaredField("$cglib_prop_" + property);
         declaredField.setAccessible(true);
         Class<?> type = declaredField.getType();
         return (E) declaredField.get(dynamicBean);
     }
+
 
     public Object getEntity() {
         return this.dynamicBean;
