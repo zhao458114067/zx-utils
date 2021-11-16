@@ -69,7 +69,7 @@ public class MapUtil {
      * @param start
      * @param end
      */
-    private static <T> void quickSort(List<Map.Entry<String, T>> a, int start, int end, Comparetor<Map.Entry<String, T>> comparator) {
+    public static <L> void quickSort(List<L> a, int start, int end, Comparetor<L> comparator) {
         if (a.size() < 0) {
             return;
         }
@@ -78,7 +78,7 @@ public class MapUtil {
         }
         int left = start;
         int right = end;
-        Map.Entry<String, T> temp = a.get(left);
+        L temp = a.get(left);
         while (left < right) {
             //从右面找
             while (left < right && comparator.compare(a.get(right), temp)) {
