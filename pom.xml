@@ -6,7 +6,7 @@
 
     <groupId>cn.supzx.utils</groupId>
     <artifactId>zx-utils</artifactId>
-    <version>1.0.8</version>
+    <version>1.0.10</version>
 
     <name>repository-util</name>
 
@@ -115,6 +115,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.1.18.RELEASE</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.belerweb</groupId>
