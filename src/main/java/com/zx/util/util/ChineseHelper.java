@@ -7,6 +7,8 @@ import net.sourceforge.pinyin4j.format.HanyuPinyinToneType;
 import net.sourceforge.pinyin4j.format.HanyuPinyinVCharType;
 import net.sourceforge.pinyin4j.format.exception.BadHanyuPinyinOutputFormatCombination;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,9 +17,9 @@ import java.util.regex.Pattern;
  */
 public final class ChineseHelper {
 
-    public static final Pattern PATTERN_CHINESE_BY_REG =Pattern.compile("[\\u4E00-\\u9FBF]+");
-    public static final Pattern PATTERN_CHINESE =Pattern.compile("[\u4E00-\u9FA5]+");
-    public static final Pattern PATTERN_MESSY_CODE =Pattern.compile("\\s*|\t*|\r*|\n*");
+    public static final Pattern PATTERN_CHINESE_BY_REG = Pattern.compile("[\\u4E00-\\u9FBF]+");
+    public static final Pattern PATTERN_CHINESE = Pattern.compile("[\u4E00-\u9FA5]+");
+    public static final Pattern PATTERN_MESSY_CODE = Pattern.compile("\\s*|\t*|\r*|\n*");
 
     /**
      * 将字符串中的中文转化为拼音,其他字符不变
@@ -25,7 +27,7 @@ public final class ChineseHelper {
      * @param inputString
      * @return
      */
-    public  static String getPingYin(String inputString) {
+    public static String getPingYin(String inputString) {
         HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
         format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
         format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
@@ -39,7 +41,7 @@ public final class ChineseHelper {
                 if (java.lang.Character.toString(input[i]).matches("[\\u4E00-\\u9FA5]+")) {
                     String[] temp = PinyinHelper.toHanyuPinyinStringArray(input[i], format);
                     output += temp[0];
-                } else{
+                } else {
                     output += java.lang.Character.toString(input[i]);
                 }
 
@@ -56,7 +58,7 @@ public final class ChineseHelper {
      * @param chinese 汉字串
      * @return 汉语拼音首字母
      */
-    public  static String getFirstSpell(String chinese) {
+    public static String getFirstSpell(String chinese) {
         StringBuilder pybf = new StringBuilder();
         char[] arr = chinese.toCharArray();
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
@@ -85,7 +87,7 @@ public final class ChineseHelper {
      * @param chinese 汉字串
      * @return 汉语拼音
      */
-    public  static String getFullSpell(String chinese) {
+    public static String getFullSpell(String chinese) {
         StringBuffer pybf = new StringBuffer();
         char[] arr = chinese.toCharArray();
         HanyuPinyinOutputFormat defaultFormat = new HanyuPinyinOutputFormat();
@@ -108,10 +110,11 @@ public final class ChineseHelper {
 
     /**
      * 只能判断部分CJK字符（CJK统一汉字）
+     *
      * @param str
      * @return
      */
-    public  static boolean isChineseByReg(String str) {
+    public static boolean isChineseByReg(String str) {
         if (str == null) {
             return false;
         }
@@ -119,7 +122,7 @@ public final class ChineseHelper {
     }
 
     // 只能判断部分CJK字符（CJK统一汉字）
-    public  static boolean isChineseByName(String str) {
+    public static boolean isChineseByName(String str) {
         if (str == null) {
             return false;
         }
@@ -133,10 +136,11 @@ public final class ChineseHelper {
 
     /**
      * 完整的判断中文汉字和符号
+     *
      * @param strName
      * @return
      */
-    public  static boolean isChinese(String strName) {
+    public static boolean isChinese(String strName) {
         char[] ch = strName.toCharArray();
         for (int i = 0; i < ch.length; i++) {
             char c = ch[i];
@@ -153,7 +157,7 @@ public final class ChineseHelper {
      * @param c
      * @return
      */
-    public  static boolean isChinese(char c) {
+    public static boolean isChinese(char c) {
         Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
         if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS) {
             return true;
@@ -164,7 +168,7 @@ public final class ChineseHelper {
     /**
      * 获取一个字符串中中文字符的个数
      */
-    public  static int chineseLength(String str) {
+    public static int chineseLength(String str) {
         Matcher m = PATTERN_CHINESE.matcher(str);
         int i = 0;
         while (m.find()) {
@@ -180,14 +184,14 @@ public final class ChineseHelper {
      * @param strName
      * @return
      */
-    public  static float isMessyCode(String strName) {
+    public static float isMessyCode(String strName) {
         Matcher m = PATTERN_MESSY_CODE.matcher(strName);
         String after = m.replaceAll("");
         String temp = after.replaceAll("\\p{P}", "");
         char[] ch = temp.trim().toCharArray();
         float chLength = 0;
         float count = 0;
-        for (char c : ch){
+        for (char c : ch) {
             if (!Character.isLetterOrDigit(c)) {
                 if (!isChinese(c)) {
                     count = count + 1;
@@ -200,37 +204,67 @@ public final class ChineseHelper {
     }
 
     /**
-     *  18位标准身份证号
+     * 18位标准身份证号
      * 方法用途：15位身份证转化为18位标准证件号
      */
-    public static String transIdCard15to18(String IdCardNO){
-        String cardNo=null;
-        if(null!=IdCardNO&&IdCardNO.trim().length()==15){
-            IdCardNO=IdCardNO.trim();
-            StringBuilder sb=new StringBuilder(IdCardNO);
+    public static String transIdCard15to18(String IdCardNO) {
+        String cardNo = null;
+        if (null != IdCardNO && IdCardNO.trim().length() == 15) {
+            IdCardNO = IdCardNO.trim();
+            StringBuilder sb = new StringBuilder(IdCardNO);
             sb.insert(6, "19");
             sb.append(transCardLastNo(sb.toString()));
-            cardNo=sb.toString();
+            cardNo = sb.toString();
         }
         return cardNo;
     }
 
     /**
      * 15位补全身份证号码
+     *
      * @param newCardId
      * @return
      */
-    private static String transCardLastNo(String newCardId){
-        char[] ch=newCardId.toCharArray();
-        int m=0;
-        int [] co={7,9,10,5,8,4,2,1,6,3,7,9,10,5,8,4,2};
-        char [] verCode=new char[]{'1','0','X','9','8','7','6','5','4','3','2'};
+    private static String transCardLastNo(String newCardId) {
+        char[] ch = newCardId.toCharArray();
+        int m = 0;
+        int[] co = {7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2};
+        char[] verCode = new char[]{'1', '0', 'X', '9', '8', '7', '6', '5', '4', '3', '2'};
         for (int i = 0; i < newCardId.length(); i++) {
-            m+=(ch[i]-'0')*co[i];
+            m += (ch[i] - '0') * co[i];
         }
-        int residue=m%11;
+        int residue = m % 11;
         return String.valueOf(verCode[residue]);
+    }
 
+    /**
+     * 获取拼音，返回值为列表
+     * @param chinese
+     * @return
+     */
+    public static List<String> getPinYinList(String chinese) {
+        List<String> result = new ArrayList<>();
+        HanyuPinyinOutputFormat format = new HanyuPinyinOutputFormat();
+        format.setCaseType(HanyuPinyinCaseType.LOWERCASE);
+        format.setToneType(HanyuPinyinToneType.WITHOUT_TONE);
+        format.setVCharType(HanyuPinyinVCharType.WITH_V);
+
+        char[] input = chinese.trim().toCharArray();
+
+        try {
+            for (int i = 0; i < input.length; i++) {
+                if (java.lang.Character.toString(input[i]).matches("[\\u4E00-\\u9FA5]+")) {
+                    String[] temp = PinyinHelper.toHanyuPinyinStringArray(input[i], format);
+                    result.add(temp[0]);
+                } else {
+                    result.add(java.lang.Character.toString(input[i]));
+                }
+
+            }
+        } catch (BadHanyuPinyinOutputFormatCombination e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }
 
