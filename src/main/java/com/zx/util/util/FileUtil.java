@@ -1,5 +1,10 @@
 package com.zx.util.util;
 
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.GenericBeanDefinition;
+
 import java.io.*;
 import java.math.BigInteger;
 import java.net.FileNameMap;
@@ -26,6 +31,24 @@ public final class FileUtil {
         } catch (NoSuchAlgorithmException ne) {
             ne.printStackTrace();
         }
+    }
+
+    /**
+     * 字节流按行读取文件按行读取全部文件数据
+     *
+     * @param strFile
+     */
+    public static StringBuffer readFile(String strFile) throws IOException {
+        StringBuffer strSb = new StringBuffer();
+        InputStreamReader inStrR = new InputStreamReader(new FileInputStream(strFile), "UTF-8");
+        // character streams
+        BufferedReader br = new BufferedReader(inStrR);
+        String line = br.readLine();
+        while (line != null) {
+            strSb.append(line).append("\r\n");
+            line = br.readLine();
+        }
+        return strSb;
     }
 
     /**

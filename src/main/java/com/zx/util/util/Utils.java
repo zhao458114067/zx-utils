@@ -1,14 +1,9 @@
 package com.zx.util.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.sun.rowset.internal.Row;
 import com.zx.util.constant.Constants;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.util.CellRangeAddress;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import javafx.scene.control.Cell;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -40,7 +35,7 @@ public class Utils {
      *
      * @return Date
      */
-    public Date getNowDate() {
+    public static Date getNowDate() {
         Date now = new Date();
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd H:mm:ss");
         String dateStr = dateFormat.format(now);
@@ -60,7 +55,7 @@ public class Utils {
      * @return String
      * @throws IOException IOException
      */
-    public String getStringFromInputStream(InputStream inputStream) throws IOException {
+    public static String getStringFromInputStream(InputStream inputStream) throws IOException {
         String s = "";
         StringBuffer sb = new StringBuffer();
         BufferedReader bufferedReader = null;
@@ -83,7 +78,7 @@ public class Utils {
      *
      * @return String
      */
-    public String getIp() {
+    public static String getIp() {
         try {
             Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
             InetAddress ip = null;
@@ -113,7 +108,7 @@ public class Utils {
      * @param time time字符串
      * @return Date
      */
-    public Date timeToDate(String time) {
+    public static Date timeToDate(String time) {
         SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String str = sdfTime.format(Long.valueOf(time));
         try {
@@ -131,7 +126,7 @@ public class Utils {
      * @param date date字符串
      * @return String
      */
-    public String stringToTime(String date) {
+    public static String stringToTime(String date) {
         SimpleDateFormat sdfTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         try {
             Date dateDate = sdfTime.parse(date);
@@ -149,7 +144,7 @@ public class Utils {
      * @param sorterBy 默认按此属性排序
      * @return Sort
      */
-    public Sort sortAttr(Map<String, String> tableMap, String sorterBy) {
+    public static Sort sortAttr(Map<String, String> tableMap, String sorterBy) {
         Sort sort;
         if (tableMap.get(Constants.SORTER) != null && !Constants.EMPTY_SORTER.equals(tableMap.get(Constants.SORTER))) {
             JSONObject sorter = JSONObject.parseObject(tableMap.get(Constants.SORTER));
@@ -172,7 +167,7 @@ public class Utils {
      * @param str str
      * @return boolean
      */
-    public boolean isNumeric(String str) {
+    public static boolean isNumeric(String str) {
         Matcher isNum = numberPattern.matcher(str);
         if (StringUtils.isEmpty(str) || !isNum.matches()) {
             return false;
@@ -180,100 +175,58 @@ public class Utils {
         return true;
     }
 
-    /**
-     * 判断指定的单元格是否是合并单元格
-     *
-     * @param sheet  sheet
-     * @param row    行下标
-     * @param column 列下标
-     * @return boolean
-     */
-    public boolean isMergedRegion(Sheet sheet, int row, int column) {
-        int sheetMergeCount = sheet.getNumMergedRegions();
-        for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress range = sheet.getMergedRegion(i);
-            int firstColumn = range.getFirstColumn();
-            int lastColumn = range.getLastColumn();
-            int firstRow = range.getFirstRow();
-            int lastRow = range.getLastRow();
-            if (row >= firstRow && row <= lastRow) {
-                if (column >= firstColumn && column <= lastColumn) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    /**
-     * 获取合并单元格的值
-     *
-     * @param sheet  sheet
-     * @param row    row
-     * @param column column
-     * @return String
-     */
-    public String getMergedRegionValue(Sheet sheet, int row, int column) {
-        int sheetMergeCount = sheet.getNumMergedRegions();
-        for (int i = 0; i < sheetMergeCount; i++) {
-            CellRangeAddress ca = sheet.getMergedRegion(i);
-            int firstColumn = ca.getFirstColumn();
-            int lastColumn = ca.getLastColumn();
-            int firstRow = ca.getFirstRow();
-            int lastRow = ca.getLastRow();
-            if (row >= firstRow && row <= lastRow) {
-                if (column >= firstColumn && column <= lastColumn) {
-                    Row fRow = sheet.getRow(firstRow);
-                    Cell fCell = fRow.getCell(firstColumn);
-                    fCell.setCellType(CellType.STRING);
-                    return fCell.getStringCellValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 按行读取全部文件数据
-     *
-     * @param strFile strFile
-     * @return StringBuffer
-     * @throws IOException IOException
-     */
-    public StringBuffer readFile(String strFile) throws IOException {
-        StringBuffer strSb = new StringBuffer();
-        InputStreamReader inStrR = new InputStreamReader(new FileInputStream(strFile), "UTF-8");
-        // character streams
-        BufferedReader br = new BufferedReader(inStrR);
-        String line = br.readLine();
-        while (line != null) {
-            strSb.append(line).append("\r\n");
-            line = br.readLine();
-        }
-        return strSb;
-    }
-
-    /**
-     * 写入文件
-     *
-     * @param fileName fileName
-     * @param s        内容
-     * @throws IOException IOException
-     */
-    public void writeToFile(String fileName, String s) throws IOException {
-        File f1 = new File(fileName);
-        OutputStream out = null;
-        BufferedWriter bw = null;
-        if (f1.exists()) {
-            out = new FileOutputStream(f1);
-            bw = new BufferedWriter(new OutputStreamWriter(out, "utf-8"));
-            bw.write(s);
-            bw.flush();
-            bw.close();
-        } else {
-            System.out.println("文件不存在");
-        }
-    }
+//    /**
+//     * 判断指定的单元格是否是合并单元格
+//     *
+//     * @param sheet  sheet
+//     * @param row    行下标
+//     * @param column 列下标
+//     * @return boolean
+//     */
+//    public boolean isMergedRegion(Sheet sheet, int row, int column) {
+//        int sheetMergeCount = sheet.getNumMergedRegions();
+//        for (int i = 0; i < sheetMergeCount; i++) {
+//            CellRangeAddress range = sheet.getMergedRegion(i);
+//            int firstColumn = range.getFirstColumn();
+//            int lastColumn = range.getLastColumn();
+//            int firstRow = range.getFirstRow();
+//            int lastRow = range.getLastRow();
+//            if (row >= firstRow && row <= lastRow) {
+//                if (column >= firstColumn && column <= lastColumn) {
+//                    return true;
+//                }
+//            }
+//        }
+//        return false;
+//    }
+//
+//    /**
+//     * 获取合并单元格的值
+//     *
+//     * @param sheet  sheet
+//     * @param row    row
+//     * @param column column
+//     * @return String
+//     */
+//    public String getMergedRegionValue(Sheet sheet, int row, int column) {
+//        int sheetMergeCount = sheet.getNumMergedRegions();
+//        for (int i = 0; i < sheetMergeCount; i++) {
+//            CellRangeAddress ca = sheet.getMergedRegion(i);
+//            int firstColumn = ca.getFirstColumn();
+//            int lastColumn = ca.getLastColumn();
+//            int firstRow = ca.getFirstRow();
+//            int lastRow = ca.getLastRow();
+//            if (row >= firstRow && row <= lastRow) {
+//                if (column >= firstColumn && column <= lastColumn) {
+//                    Row fRow = sheet.getRow(firstRow);
+//                    Cell fCell = fRow.getCell(firstColumn);
+//                    fCell.setCellType(CellType.STRING);
+//                    return fCell.getStringCellValue();
+//                }
+//            }
+//        }
+//        return null;
+//    }
 
     /**
      * 获取用户真实IP地址，不使用request.getRemoteAddr()的原因是有可能用户使用了代理软件方式避免真实IP地址,
@@ -281,7 +234,7 @@ public class Utils {
      *
      * @return ip
      */
-    private String getIpAddr(HttpServletRequest request) {
+    public static String getIpAddr(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         System.out.println("x-forwarded-for ip: " + ip);
         if (ip != null && ip.length() != 0 && !Constants.UNKNOWN.equalsIgnoreCase(ip)) {
@@ -325,7 +278,7 @@ public class Utils {
      * @param tClass 要转的类型
      * @return Object
      */
-    public Object covertStr(String str, Class<?> tClass) {
+    public static Object covertStr(String str, Class<?> tClass) {
         if (tClass == Long.class) {
             return Long.valueOf(str);
         } else if (tClass == Integer.class || tClass == int.class || tClass == short.class) {

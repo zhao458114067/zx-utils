@@ -3,7 +3,7 @@ package com.zx.util.controller;
 import com.alibaba.fastjson.JSONObject;
 import com.zx.util.annotation.ModelMapping;
 import com.zx.util.constant.Constants;
-import com.zx.util.service.MyRepository;
+import com.zx.util.service.BaseRepository;
 import com.zx.util.util.MyBaseConverter;
 import com.zx.util.util.ReflectUtil;
 import com.zx.util.util.SpringManager;
@@ -28,10 +28,10 @@ import java.util.Map;
  * @author: zhaoxu
  * 公用controller
  */
-public class MyControllerModel<S, E> implements ApplicationRunner {
-    private static final Logger logger = LoggerFactory.getLogger(MyControllerModel.class);
+public class BaseControllerModel<S, E> implements ApplicationRunner {
+    private static final Logger logger = LoggerFactory.getLogger(BaseControllerModel.class);
 
-    public MyRepository myRepository;
+    public BaseRepository myRepository;
 
     private Type[] actualTypeArguments;
 
@@ -158,7 +158,7 @@ public class MyControllerModel<S, E> implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
-        Class<? extends MyControllerModel> aClass = this.getClass();
+        Class<? extends BaseControllerModel> aClass = this.getClass();
         //获取泛型类型
         Type genericSuperclass = aClass.getGenericSuperclass();
         ParameterizedType parameterizedType = (ParameterizedType) genericSuperclass;
@@ -168,6 +168,6 @@ public class MyControllerModel<S, E> implements ApplicationRunner {
         List<String> strings = Arrays.asList(aClass.getName().split("\\."));
         String controllerName = strings.get(strings.size() - 1);
         String serviceApi = Character.toLowerCase(controllerName.charAt(0)) + controllerName.split("Controller")[0].substring(1);
-        this.myRepository = (MyRepository) SpringManager.getBean(serviceApi + "Repository");
+        this.myRepository = (BaseRepository) SpringManager.getBean(serviceApi + "Repository");
     }
 }

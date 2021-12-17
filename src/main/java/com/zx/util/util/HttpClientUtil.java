@@ -37,7 +37,7 @@ public class HttpClientUtil {
      * @return 字符串
      * @throws IOException io出错
      */
-    public static String get(Map<String, String> headers, String url, JSONObject params) throws IOException {
+    public static String get(JSONObject headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建get请求
         HttpGet httpGet = null;
@@ -56,10 +56,8 @@ public class HttpClientUtil {
         }
 
         if (headers != null) {
-            Iterator iterator = headers.keySet().iterator();
-            while (iterator.hasNext()) {
-                String headerName = iterator.next().toString();
-                httpGet.addHeader(headerName, headers.get(headerName));
+            for(Map.Entry<String,Object>entry:headers.entrySet()){
+                httpGet.addHeader(entry.getKey(), entry.getValue().toString());
             }
         }
         httpGet.addHeader("Content-Type", "application/json");
@@ -78,15 +76,13 @@ public class HttpClientUtil {
      * @return 字符串
      * @throws IOException io出错
      */
-    public static String post(Map<String, String> headers, String url, JSONObject params) throws IOException {
+    public static String post(JSONObject headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建post请求
         HttpPost httpPost = new HttpPost(url);
         if (headers != null) {
-            Iterator iterator = headers.keySet().iterator();
-            while (iterator.hasNext()) {
-                String headerName = iterator.next().toString();
-                httpPost.addHeader(headerName, headers.get(headerName));
+            for(Map.Entry<String,Object>entry:headers.entrySet()){
+                httpPost.addHeader(entry.getKey(), entry.getValue().toString());
             }
         }
         httpPost.addHeader("Content-Type", "application/json");
@@ -109,15 +105,13 @@ public class HttpClientUtil {
      * @return 字符串
      * @throws IOException io出错
      */
-    public static String delete(Map<String, String> headers, String url, JSONObject params) throws IOException {
+    public static String delete(JSONObject headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建delete请求，HttpDeleteWithBody 为内部类，类在下面
         HttpDeleteWithBody httpDelete = new HttpDeleteWithBody(url);
         if (headers != null) {
-            Iterator iterator = headers.keySet().iterator();
-            while (iterator.hasNext()) {
-                String headerName = iterator.next().toString();
-                httpDelete.addHeader(headerName, headers.get(headerName));
+            for(Map.Entry<String,Object>entry:headers.entrySet()){
+                httpDelete.addHeader(entry.getKey(), entry.getValue().toString());
             }
         }
         httpDelete.addHeader("Content-Type", "application/json");
@@ -140,15 +134,13 @@ public class HttpClientUtil {
      * @return 字符串
      * @throws IOException io出错
      */
-    public static String put(Map<String, String> headers, String url, JSONObject params) throws IOException {
+    public static String put(JSONObject headers, String url, JSONObject params) throws IOException {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建put请求
         HttpPut httpPut = new HttpPut(url);
         if (headers != null) {
-            Iterator iterator = headers.keySet().iterator();
-            while (iterator.hasNext()) {
-                String headerName = iterator.next().toString();
-                httpPut.addHeader(headerName, headers.get(headerName));
+            for(Map.Entry<String,Object>entry:headers.entrySet()){
+                httpPut.addHeader(entry.getKey(), entry.getValue().toString());
             }
         }
         httpPut.addHeader("Content-Type", "application/json");

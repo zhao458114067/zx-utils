@@ -13,7 +13,7 @@ public class ListUtil {
      *
      * @param data  数据
      * @param split 分隔符
-     * @return  字符串
+     * @return 字符串
      */
     public static String joinList(List data, String split) {
         StringBuilder result = new StringBuilder();
@@ -36,7 +36,7 @@ public class ListUtil {
      *
      * @param data  数据
      * @param split 切割符号
-     * @return  列表
+     * @return 列表
      */
     public static List<String> splitIntoList(String data, String split) {
         //为空
@@ -61,10 +61,10 @@ public class ListUtil {
     /**
      * 分页
      *
-     * @param data  数据
+     * @param data     数据
      * @param current  页数
      * @param pageSize 每页条数
-     * @return  map
+     * @return map
      */
     public static <E> Map<String, Object> toPage(List<E> data, int current, int pageSize) {
         //判空
@@ -86,10 +86,11 @@ public class ListUtil {
 
     /**
      * 查找列表1在列表2中的差异项
+     *
      * @param list1 列表1
      * @param list2 列表2
      * @param <E>   泛型
-     * @return  差异列表
+     * @return 差异列表
      */
     public static <E> List<E> getListDiff(List<E> list1, List<E> list2) {
         if (list1 == null || list1.isEmpty()) {
@@ -112,6 +113,17 @@ public class ListUtil {
         diffSet.removeAll(setOfCommonElements);
 
         return new ArrayList<>(diffSet);
+    }
+
+    /**
+     * 判断列表为空
+     *
+     * @param list
+     * @param <E>
+     * @return
+     */
+    public static <E> Boolean isEmpty(List<E> list) {
+        return list == null || list.size() == 0;
     }
 }
 
