@@ -17,10 +17,10 @@ import java.util.List;
 /**
  * @author : zhaoxu
  */
-public class MyRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
+public class BaseRequestMappingHandlerMapping extends RequestMappingHandlerMapping {
     RequestMappingInfo.BuilderConfiguration config = new RequestMappingInfo.BuilderConfiguration();
 
-    public MyRequestMappingHandlerMapping() {
+    public BaseRequestMappingHandlerMapping() {
     }
 
     @SneakyThrows

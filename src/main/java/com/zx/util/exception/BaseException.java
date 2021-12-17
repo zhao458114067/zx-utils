@@ -3,12 +3,12 @@ package com.zx.util.exception;
 /**
  * @author : zhaoxu
  */
-public class MyException extends RuntimeException {
+public class BaseException extends RuntimeException {
     private Integer code;
 
     private String message;
 
-    public MyException(Integer code, String message) {
+    public BaseException(Integer code, String message) {
         super(message);
         this.code = code;
     }

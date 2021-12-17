@@ -7,7 +7,7 @@ import java.util.Map;
  * service继承
  * @author : zhaoxu
  */
-public interface MyServiceModel<T> {
+public interface BaseServiceModel<T> {
     /**
      * 增
      *

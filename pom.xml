@@ -6,7 +6,7 @@
 
     <groupId>cn.supzx.utils</groupId>
     <artifactId>zx-utils</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
 
     <name>repository-util</name>
 
@@ -73,16 +73,6 @@
             <groupId>org.hibernate.javax.persistence</groupId>
             <artifactId>hibernate-jpa-2.1-api</artifactId>
             <version>1.0.2.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>

@@ -25,6 +25,7 @@ public class MapUtil {
          */
         Boolean compare(T o1, T o2);
     }
+
     /**
      * 过滤map
      *
@@ -143,6 +144,18 @@ public class MapUtil {
      */
     public static <T> Boolean descByKey(Map.Entry<String, T> entry1, Map.Entry<String, T> entry2) {
         return entry1.getKey().compareTo(entry2.getKey()) <= 0;
+    }
+
+    /**
+     * 判断map为空
+     *
+     * @param map
+     * @param <K>
+     * @param <V>
+     * @return
+     */
+    public static <K, V> Boolean isEmpty(Map<K, V> map) {
+        return map == null || map.size() == 0;
     }
 }
 

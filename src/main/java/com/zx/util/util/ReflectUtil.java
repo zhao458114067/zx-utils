@@ -2,7 +2,7 @@ package com.zx.util.util;
 
 import com.zx.util.constant.Constants;
 import com.zx.util.constant.ErrorCodeEnum;
-import com.zx.util.exception.MyException;
+import com.zx.util.exception.BaseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.jpa.domain.Specification;
@@ -63,7 +63,7 @@ public class ReflectUtil {
                     try {
                         aClass = Class.forName(typeName);
                     } catch (ClassNotFoundException e) {
-                        throw new MyException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), "未找到属性类型");
+                        throw new BaseException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), "未找到属性类型");
                     }
                     //属性不包含特定的属性并且是字符串采用模糊搜索
                     boolean isLike = aClass == String.class && (CollectionUtils.isEmpty(excludeAttr) || !excludeAttr.contains(fieldName));
@@ -136,7 +136,7 @@ public class ReflectUtil {
                     try {
                         aClass = Class.forName(typeName);
                     } catch (ClassNotFoundException e) {
-                        throw new MyException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), "未找到属性类型");
+                        throw new BaseException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), "未找到属性类型");
                     }
                     //属性不包含特定的属性并且是字符串采用模糊搜索
                     boolean isLike = aClass == String.class && (CollectionUtils.isEmpty(excludeAttr) || !excludeAttr.contains(fieldName));

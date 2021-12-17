@@ -1,4 +1,4 @@
-package com.supcon.mare.tankinfo.controller.vo;
+package com.zx.util.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -18,7 +18,7 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
-public class DynmicVO {
+public class DynamicVO {
 
     Object dynamicBean;
 
@@ -26,12 +26,12 @@ public class DynmicVO {
 
     Class clazz;
 
-    public DynmicVO(Map dynAttrMap) {
+    public DynamicVO(Map dynAttrMap) {
         this.dynamicBean = generateBean(dynAttrMap);
         clazz = dynamicBean.getClass();
     }
 
-    public DynmicVO(Object object) throws IllegalAccessException, NoSuchFieldException {
+    public DynamicVO(Object object) throws IllegalAccessException, NoSuchFieldException {
         dynamicBean = generateBean(getFields(object));
         Map<String, Object> values = getValues(object);
         Iterator<String> iterator = values.keySet().iterator();
@@ -43,15 +43,15 @@ public class DynmicVO {
         clazz = dynamicBean.getClass();
     }
 
-    public static DynmicVO parseMap(Map<String, Object> targetMap) throws NoSuchFieldException, IllegalAccessException {
-        DynmicVO dynmicVO = new DynmicVO();
+    public static DynamicVO parseMap(Map<String, Object> targetMap) throws NoSuchFieldException, IllegalAccessException {
+        DynamicVO dynmicVO = new DynamicVO();
         for (Map.Entry<String, Object> entry : targetMap.entrySet()) {
             dynmicVO.put(entry.getKey(), entry.getValue());
         }
         return dynmicVO;
     }
 
-    public static DynmicVO parseString(String jsonString) throws NoSuchFieldException, IllegalAccessException {
+    public static DynamicVO parseString(String jsonString) throws NoSuchFieldException, IllegalAccessException {
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         return parseMap(jsonObject);
     }

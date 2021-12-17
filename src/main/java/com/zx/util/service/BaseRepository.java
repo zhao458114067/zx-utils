@@ -14,7 +14,7 @@ import java.util.Map;
  * @author : zhaoxu
  */
 @NoRepositoryBean
-public interface MyRepository<T, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
+public interface BaseRepository<T, ID extends Serializable> extends JpaRepository<T, ID>, JpaSpecificationExecutor<T> {
 
     /**
      * 分页条件查询

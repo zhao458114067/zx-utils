@@ -1,6 +1,6 @@
 package com.zx.util.factory;
 
-import com.zx.util.service.impl.MyRepositoryImpl;
+import com.zx.util.service.impl.BaseRepositoryImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
@@ -43,13 +43,13 @@ public class BaseJpaRepositoryFactoryBean<T extends JpaRepository<S, ID>, S, ID 
         protected JpaRepositoryImplementation<?, ?> getTargetRepository(RepositoryInformation information, EntityManager entityManager) {
             JpaEntityInformation<?, Serializable> entityInformation = this.getEntityInformation(information.getDomainType());
             Object repository = this.getTargetRepositoryViaReflection(information, new Object[]{entityInformation, entityManager});
-            Assert.isInstanceOf(MyRepositoryImpl.class, repository);
+            Assert.isInstanceOf(BaseRepositoryImpl.class, repository);
             return (JpaRepositoryImplementation) repository;
         }
 
         @Override
         protected Class<?> getRepositoryBaseClass(RepositoryMetadata metadata) {
-            return MyRepositoryImpl.class;
+            return BaseRepositoryImpl.class;
         }
     }
 }

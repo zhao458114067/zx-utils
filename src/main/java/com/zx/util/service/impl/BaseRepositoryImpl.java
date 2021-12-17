@@ -1,7 +1,7 @@
 package com.zx.util.service.impl;
 
 import com.zx.util.constant.Constants;
-import com.zx.util.service.MyRepository;
+import com.zx.util.service.BaseRepository;
 import com.zx.util.util.ReflectUtil;
 import com.zx.util.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +26,8 @@ import java.util.*;
  * JPA通用功能扩展
  * @author : zhaoxu
  */
-public class MyRepositoryImpl<T, ID extends Serializable>
-        extends SimpleJpaRepository<T, ID> implements MyRepository<T, ID> {
+public class BaseRepositoryImpl<T, ID extends Serializable>
+        extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
 
     private ReflectUtil reflectUtil = new ReflectUtil();
 
@@ -38,7 +38,7 @@ public class MyRepositoryImpl<T, ID extends Serializable>
     private Class<T> clazz;
 
     @Autowired(required = false)
-    public MyRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
+    public BaseRepositoryImpl(JpaEntityInformation<T, ID> entityInformation, EntityManager entityManager) {
         super(entityInformation, entityManager);
         this.clazz = entityInformation.getJavaType();
         this.entityManager = entityManager;
