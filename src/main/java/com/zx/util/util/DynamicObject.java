@@ -18,7 +18,7 @@ import java.util.Map;
  */
 @Data
 @NoArgsConstructor
-public class DynamicVO {
+public class DynamicObject {
 
     Object dynamicBean;
 
@@ -26,12 +26,12 @@ public class DynamicVO {
 
     Class clazz;
 
-    public DynamicVO(Map dynAttrMap) {
+    public DynamicObject(Map dynAttrMap) {
         this.dynamicBean = generateBean(dynAttrMap);
         clazz = dynamicBean.getClass();
     }
 
-    public DynamicVO(Object object) throws IllegalAccessException, NoSuchFieldException {
+    public DynamicObject(Object object) throws IllegalAccessException, NoSuchFieldException {
         dynamicBean = generateBean(getFields(object));
         Map<String, Object> values = getValues(object);
         Iterator<String> iterator = values.keySet().iterator();
@@ -43,15 +43,15 @@ public class DynamicVO {
         clazz = dynamicBean.getClass();
     }
 
-    public static DynamicVO parseMap(Map<String, Object> targetMap) throws NoSuchFieldException, IllegalAccessException {
-        DynamicVO dynmicVO = new DynamicVO();
+    public static DynamicObject parseMap(Map<String, Object> targetMap) throws NoSuchFieldException, IllegalAccessException {
+        DynamicObject dynmicVO = new DynamicObject();
         for (Map.Entry<String, Object> entry : targetMap.entrySet()) {
             dynmicVO.put(entry.getKey(), entry.getValue());
         }
         return dynmicVO;
     }
 
-    public static DynamicVO parseString(String jsonString) throws NoSuchFieldException, IllegalAccessException {
+    public static DynamicObject parseString(String jsonString) throws NoSuchFieldException, IllegalAccessException {
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         return parseMap(jsonObject);
     }
