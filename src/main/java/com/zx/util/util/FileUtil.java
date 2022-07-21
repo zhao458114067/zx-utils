@@ -637,5 +637,47 @@ public final class FileUtil {
         String fileName = file.getName();
         return fileName.substring(fileName.indexOf(".") + 1);
     }
+
+    /**
+     * 追加文件
+     */
+    public static void writeToFileAppend(String fileName, String text) {
+        FileWriter fw = null;
+        try {
+            //如果文件存在，则追加内容；如果文件不存在，则创建文件
+            File f = new File(fileName);
+            fw = new FileWriter(f, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PrintWriter pw = new PrintWriter(fw);
+        pw.println(text);
+        pw.flush();
+        try {
+            fw.flush();
+            pw.close();
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 读取所有子文件
+     *
+     * @param dirPath
+     * @param allFileList
+     */
+    public static void getAllFile(File dirPath, List<File> allFileList) {
+        File[] fileList = dirPath.listFiles();
+        assert fileList != null;
+        for (File file : fileList) {
+            if (file.isDirectory()) {
+                getAllFile(file, allFileList);
+            } else {
+                allFileList.add(file);
+            }
+        }
+    }
 }
 

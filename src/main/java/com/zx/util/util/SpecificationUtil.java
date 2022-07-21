@@ -23,29 +23,27 @@ import java.util.*;
  * @author : zhaoxu
  */
 @Component
-public class ReflectUtil {
-    static final Logger logger = LoggerFactory.getLogger(ReflectUtil.class);
+public class SpecificationUtil {
+    static final Logger logger = LoggerFactory.getLogger(SpecificationUtil.class);
 
     /**
      * 生成全属性条件查询通用Specification
      *
-     * @param tableMap    属性参数
-     * @param clazz       要查询的实体类或vo类
-     * @param excludeAttr 不使用模糊搜索的字符串属性
-     * @param map         外键关联查询
-     * @param <S>         泛型
+     * @param objConditions   属性参数
+     * @param clazz           要查询的实体类或vo类
+     * @param excludeLikeAttr 不使用模糊搜索的字符串属性
+     * @param <E>             泛型
      * @return Specification
      */
-    @Deprecated
-    public <S> Specification<S> createSpecification(Map<String, String> tableMap, Class clazz, List<String> excludeAttr, Map map) {
-        Specification<S> specification = (root, query, cb) -> {
+    public <E> Specification<E> createSpecification(Map<String, String> objConditions, Class<E> clazz, List<String> excludeLikeAttr) {
+        return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             //未删除的数据
             try {
                 clazz.getDeclaredField(Constants.VALID);
-                if (!StringUtils.isEmpty(tableMap.get(Constants.VALID))) {
-                    predicates.add(cb.equal(root.get(Constants.VALID), Integer.valueOf(tableMap.get(Constants.VALID))));
+                if (!StringUtils.isEmpty(objConditions.get(Constants.VALID))) {
+                    predicates.add(cb.equal(root.get(Constants.VALID), Integer.valueOf(objConditions.get(Constants.VALID))));
                 } else {
                     predicates.add(cb.equal(root.get(Constants.VALID), 1));
                 }
@@ -57,7 +55,8 @@ public class ReflectUtil {
 
             for (Field field : declaredFields) {
                 String fieldName = field.getName();
-                if (!StringUtils.isEmpty(tableMap.get(fieldName))) {
+                String condition = objConditions.get(fieldName);
+                if (!StringUtils.isEmpty(condition)) {
                     String typeName = field.getGenericType().getTypeName();
                     Class<?> aClass;
                     try {
@@ -66,96 +65,25 @@ public class ReflectUtil {
                         throw new BaseException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), "未找到属性类型");
                     }
                     //属性不包含特定的属性并且是字符串采用模糊搜索
-                    boolean isLike = aClass == String.class && (CollectionUtils.isEmpty(excludeAttr) || !excludeAttr.contains(fieldName));
+                    boolean isLike = aClass == String.class && (CollectionUtils.isEmpty(excludeLikeAttr) || !excludeLikeAttr.contains(fieldName));
                     if (isLike) {
-                        String queryFieldName = "%" + tableMap.get(fieldName).replace("/", "\\/")
+                        String queryFieldName = "%" + condition.replace("/", "\\/")
                                 .replaceAll("_", "\\\\_").replaceAll("%", "\\\\%") + "%";
                         predicates.add(cb.like(root.get(fieldName), queryFieldName));
                     } else {
-                        predicates.add(cb.and(root.get(fieldName).in(Arrays.asList(tableMap.get(fieldName).split(",")))));
-                    }
-                }
-            }
-
-            //外键关联查询，旧
-            if (!CollectionUtils.isEmpty(map)) {
-                Iterator iterator = map.keySet().iterator();
-                while (iterator.hasNext()) {
-                    String sourceKey = iterator.next().toString();
-                    Map mapping = (Map) map.get(sourceKey);
-                    Join join = root.join(sourceKey, JoinType.INNER);
-                    Iterator mappingItr = mapping.keySet().iterator();
-                    while (mappingItr.hasNext()) {
-                        String joinKey = mappingItr.next().toString();
-                        String joinAttr = mapping.get(joinKey).toString();
-                        if (!StringUtils.isEmpty(tableMap.get(joinKey))) {
-                            predicates.add(cb.and(join.get(joinAttr).in(Arrays.asList(tableMap.get(joinKey).split(",")))));
-                        }
-                    }
-                }
-            }
-            Predicate[] pre = new Predicate[predicates.size()];
-            Predicate preAnd = cb.and(predicates.toArray(pre));
-            return query.where(preAnd).getRestriction();
-        };
-        return specification;
-    }
-
-    /**
-     * 生成全属性条件查询通用Specification
-     *
-     * @param tableMap    属性参数
-     * @param clazz       要查询的实体类或vo类
-     * @param excludeAttr 不使用模糊搜索的字符串属性
-     * @param <S>         泛型
-     * @return Specification
-     */
-    public <S> Specification<S> createSpecification(Map<String, String> tableMap, Class clazz, List<String> excludeAttr) {
-        Specification<S> specification = (root, query, cb) -> {
-            List<Predicate> predicates = new ArrayList<>();
-
-            //未删除的数据
-            try {
-                clazz.getDeclaredField(Constants.VALID);
-                if (!StringUtils.isEmpty(tableMap.get(Constants.VALID))) {
-                    predicates.add(cb.equal(root.get(Constants.VALID), Integer.valueOf(tableMap.get(Constants.VALID))));
-                } else {
-                    predicates.add(cb.equal(root.get(Constants.VALID), 1));
-                }
-            } catch (NoSuchFieldException e) {
-                logger.warn("没有找到属性：valid");
-            }
-
-            Field[] declaredFields = clazz.getDeclaredFields();
-
-            for (Field field : declaredFields) {
-                String fieldName = field.getName();
-                if (!StringUtils.isEmpty(tableMap.get(fieldName))) {
-                    String typeName = field.getGenericType().getTypeName();
-                    Class<?> aClass;
-                    try {
-                        aClass = Class.forName(typeName);
-                    } catch (ClassNotFoundException e) {
-                        throw new BaseException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), "未找到属性类型");
-                    }
-                    //属性不包含特定的属性并且是字符串采用模糊搜索
-                    boolean isLike = aClass == String.class && (CollectionUtils.isEmpty(excludeAttr) || !excludeAttr.contains(fieldName));
-                    if (isLike) {
-                        String queryFieldName = "%" + tableMap.get(fieldName).replace("/", "\\/")
-                                .replaceAll("_", "\\\\_").replaceAll("%", "\\\\%") + "%";
-                        predicates.add(cb.like(root.get(fieldName), queryFieldName));
-                    } else {
-                        predicates.add(cb.and(root.get(fieldName).in(Arrays.asList(tableMap.get(fieldName).split(",")))));
+                        List<String> conditionList = Arrays.asList(condition.split(","));
+                        predicates.add(cb.and(root.get(fieldName).in(conditionList)));
                     }
                 }
             }
 
             //外键关联查询，新，可以省去map参数
-            if (!CollectionUtils.isEmpty(tableMap)) {
-                for (Map.Entry<String, String> entry : tableMap.entrySet()) {
+            if (!CollectionUtils.isEmpty(objConditions)) {
+                for (Map.Entry<String, String> entry : objConditions.entrySet()) {
                     if (entry.getKey().contains(".")) {
                         //递归解析真实的path
-                        predicates.add(cb.and(getRootPath(root, null, entry.getKey()).in(Arrays.asList(entry.getValue().split(",")))));
+                        List<String> conditionList = Arrays.asList(entry.getValue().split(","));
+                        predicates.add(cb.and(getRootPath(root, null, entry.getKey()).in(conditionList)));
                     }
                 }
             }
@@ -163,7 +91,6 @@ public class ReflectUtil {
             Predicate preAnd = cb.and(predicates.toArray(pre));
             return query.where(preAnd).getRestriction();
         };
-        return specification;
     }
 
     /**
@@ -171,11 +98,11 @@ public class ReflectUtil {
      *
      * @param attr      查询的字段
      * @param condition 条件
-     * @param <S>       泛型
+     * @param <E>       泛型
      * @return Specification
      */
-    public <S> Specification<S> createOneSpecification(String attr, String condition) {
-        Specification<S> specification = (root, query, cb) -> {
+    public <E> Specification<E> createOneSpecification(String attr, String condition) {
+        return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             //未删除的数据
@@ -194,14 +121,14 @@ public class ReflectUtil {
                 //递归解析真实的path
                 predicates.add(cb.equal(getRootPath(root, null, attr), condition));
             } else {
-                predicates.add(cb.equal(root.get(attr), condition));
+                List<String> conditionList = Arrays.asList(condition.split(","));
+                predicates.add(cb.and(root.get(attr).in(conditionList)));
             }
 
             Predicate[] pre = new Predicate[predicates.size()];
             Predicate preAnd = cb.and(predicates.toArray(pre));
             return query.where(preAnd).getRestriction();
         };
-        return specification;
     }
 
     /**
@@ -210,14 +137,14 @@ public class ReflectUtil {
      * @param root    root
      * @param path    path
      * @param allPath allPath
-     * @param <S>     S
+     * @param <E>     E
      * @return Path
      */
-    public <S> Path getRootPath(Root<S> root, Path path, String allPath) {
+    public <E> Path<E> getRootPath(Root<E> root, Path<E> path, String allPath) {
         List<String> pathList = Arrays.asList(allPath.split("\\."));
         //下一个解析的path
         StringBuilder restPath = new StringBuilder();
-        Path nowPath = null;
+        Path<E> nowPath = null;
         if (!CollectionUtils.isEmpty(pathList)) {
             if (root != null) {
                 nowPath = root.get(pathList.get(0));
@@ -307,9 +234,7 @@ public class ReflectUtil {
             Field declaredField = clazz.getDeclaredField(property);
             declaredField.setAccessible(true);
             declaredField.set(object, value);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
+        } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
         return true;
