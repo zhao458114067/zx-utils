@@ -1,5 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.zx.util.util.SpecificationUtil,\
-  com.zx.util.util.SpringManager,\
-  com.zx.util.util.HttpClientUtil,\
-  com.zx.util.util.MyBaseConverter
+  com.zx.utils.util.SpecificationUtil,\
+  com.zx.utils.util.SpringManager,\
+  com.zx.utils.util.HttpClientUtil,\
+  com.zx.utils.util.MyBaseConverter,\
+  com.zx.utils.config.BaseJpaRepositoryConfig,\
+  com.zx.utils.config.RequestMappingConfig
