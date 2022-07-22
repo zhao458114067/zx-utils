@@ -29,8 +29,6 @@ import java.util.*;
 public class BaseRepositoryImpl<T, ID extends Serializable>
         extends SimpleJpaRepository<T, ID> implements BaseRepository<T, ID> {
 
-    private final SpecificationUtil specificationUtil = new SpecificationUtil();
-
     private EntityManager entityManager;
 
     private final Class<T> clazz;
@@ -51,7 +49,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
             pageable = PageRequest.of(current - 1, pageSize);
         }
 
-        Specification<T> specification = specificationUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
+        Specification<T> specification = SpecificationUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
         return this.findAll(specification, pageable);
     }
 
@@ -65,7 +63,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
      */
     @Override
     public List<T> findByConditions(Map<String, String> objConditions, List<String> excludeLikeAttr, String sortAttr) {
-        Specification<T> specification = specificationUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
+        Specification<T> specification = SpecificationUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
 
         if (!StringUtils.isEmpty(sortAttr)) {
             return this.findAll(specification, Utils.sortAttr(objConditions, sortAttr));
@@ -80,13 +78,19 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
         List<String> strings = Arrays.asList(ids.split(","));
         if (!CollectionUtils.isEmpty(strings)) {
             //获取主键
-            List<Field> idAnnoation = specificationUtil.getTargetAnnoation(clazz, Id.class);
+            List<Field> idAnnoation = SpecificationUtil.getTargetAnnoation(clazz, Id.class);
             if (!CollectionUtils.isEmpty(idAnnoation)) {
                 Field field = idAnnoation.get(0);
                 strings.forEach(id -> {
                     T object = this.findOneByAttr(field.getName(), id);
                     if (object != null) {
-                        specificationUtil.setValue(object, "valid", 0);
+                        try {
+                            SpecificationUtil.setValue(object, "valid", 0);
+                        } catch (NoSuchFieldException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
                         this.save(object);
                     }
                 });
@@ -96,7 +100,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
 
     @Override
     public T findOneByAttr(String attr, String condition) {
-        Specification<T> specification = specificationUtil.createOneSpecification(attr, condition);
+        Specification<T> specification = SpecificationUtil.createOneSpecification(attr, condition);
         Optional<T> result = this.findOne(specification);
 
         return result.orElse(null);
@@ -104,7 +108,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
 
     @Override
     public List<T> findByAttr(String attr, String condition) {
-        Specification<T> specification = specificationUtil.createOneSpecification(attr, condition);
+        Specification<T> specification = SpecificationUtil.createOneSpecification(attr, condition);
         return this.findAll(specification);
     }
 }

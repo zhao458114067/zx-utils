@@ -22,7 +22,6 @@ import java.util.*;
  *
  * @author : zhaoxu
  */
-@Component
 public class SpecificationUtil {
     static final Logger logger = LoggerFactory.getLogger(SpecificationUtil.class);
 
@@ -35,7 +34,7 @@ public class SpecificationUtil {
      * @param <E>             泛型
      * @return Specification
      */
-    public <E> Specification<E> createSpecification(Map<String, String> objConditions, Class<E> clazz, List<String> excludeLikeAttr) {
+    public static <E> Specification<E> createSpecification(Map<String, String> objConditions, Class<E> clazz, List<String> excludeLikeAttr) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -62,7 +61,7 @@ public class SpecificationUtil {
                     try {
                         aClass = Class.forName(typeName);
                     } catch (ClassNotFoundException e) {
-                        throw new BaseException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), "未找到属性类型");
+                        throw new BaseException(ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorCode(), ErrorCodeEnum.CANNOT_FIND_ATTR_ERROR.getErrorMessage());
                     }
                     //属性不包含特定的属性并且是字符串采用模糊搜索
                     boolean isLike = aClass == String.class && (CollectionUtils.isEmpty(excludeLikeAttr) || !excludeLikeAttr.contains(fieldName));
@@ -101,7 +100,7 @@ public class SpecificationUtil {
      * @param <E>       泛型
      * @return Specification
      */
-    public <E> Specification<E> createOneSpecification(String attr, String condition) {
+    public static <E> Specification<E> createOneSpecification(String attr, String condition) {
         return (root, query, cb) -> {
             List<Predicate> predicates = new ArrayList<>();
 
@@ -140,7 +139,7 @@ public class SpecificationUtil {
      * @param <E>     E
      * @return Path
      */
-    public <E> Path<E> getRootPath(Root<E> root, Path<E> path, String allPath) {
+    public static <E> Path<E> getRootPath(Root<E> root, Path<E> path, String allPath) {
         List<String> pathList = Arrays.asList(allPath.split("\\."));
         //下一个解析的path
         StringBuilder restPath = new StringBuilder();
@@ -188,7 +187,7 @@ public class SpecificationUtil {
      * @throws IllegalAccessException    IllegalAccessException
      * @throws NoSuchMethodException     NoSuchMethodException
      */
-    public Object executeMethod(Object object, String methodName, Object... parameters) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+    public static Object executeMethod(Object object, String methodName, Object... parameters) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Class<?> clazz = object.getClass();
         ArrayList<Class<?>> paramTypeList = new ArrayList<>();
         for (Object paramType : parameters) {
@@ -207,7 +206,7 @@ public class SpecificationUtil {
      * @return Map
      * @throws IllegalAccessException IllegalAccessException
      */
-    public Map<String, Object> getFieldsValue(Object object) throws IllegalAccessException {
+    public static Map<String, Object> getFieldsValue(Object object) throws IllegalAccessException {
         Class<?> clazz = object.getClass();
         Map<String, Object> fieldValuesMap = new HashMap<>(16);
         Field[] fields = clazz.getDeclaredFields();
@@ -228,15 +227,11 @@ public class SpecificationUtil {
      * @param object   object
      * @return Boolean
      */
-    public Boolean setValue(Object object, String property, Object value) {
+    public static Boolean setValue(Object object, String property, Object value) throws NoSuchFieldException, IllegalAccessException {
         Class<?> clazz = object.getClass();
-        try {
-            Field declaredField = clazz.getDeclaredField(property);
-            declaredField.setAccessible(true);
-            declaredField.set(object, value);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
-        }
+        Field declaredField = clazz.getDeclaredField(property);
+        declaredField.setAccessible(true);
+        declaredField.set(object, value);
         return true;
     }
 
@@ -247,7 +242,7 @@ public class SpecificationUtil {
      * @return Map
      * @throws IllegalAccessException IllegalAccessException
      */
-    public Map<String, Class<?>> getFields(Object object) throws IllegalAccessException {
+    public static Map<String, Class<?>> getFields(Object object) throws IllegalAccessException {
         Class<?> clazz = object.getClass();
         Map<String, Class<?>> attrMap = new HashMap<>(16);
         if (clazz != null) {
@@ -267,7 +262,7 @@ public class SpecificationUtil {
      * @return Map
      * @throws IllegalAccessException IllegalAccessException
      */
-    public Map<String, Object> getValues(Object object) throws IllegalAccessException {
+    public static Map<String, Object> getValues(Object object) throws IllegalAccessException {
         Map<String, Object> fieldValuesMap = new HashMap(16);
         Class<?> clazz = object.getClass();
         if (clazz != null) {
@@ -289,7 +284,7 @@ public class SpecificationUtil {
      * @param annoClass   查询的注解
      * @return List
      */
-    public List<Field> getTargetAnnoation(Class<?> objectClass, Class<? extends Annotation> annoClass) {
+    public static List<Field> getTargetAnnoation(Class<?> objectClass, Class<? extends Annotation> annoClass) {
         List<Field> fields = new ArrayList<>();
         Field[] declaredFields = objectClass.getDeclaredFields();
 
