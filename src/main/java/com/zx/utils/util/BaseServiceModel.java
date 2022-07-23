@@ -1,4 +1,4 @@
-package com.zx.utils.service;
+package com.zx.utils.util;
 
 import java.util.List;
 import java.util.Map;

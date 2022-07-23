@@ -85,7 +85,7 @@ public class ListUtil {
     }
 
     /**
-     * 查找列表1在列表2中的差异项
+     * 查找列表2中列表1没有的项
      *
      * @param list1 列表1
      * @param list2 列表2
@@ -93,20 +93,18 @@ public class ListUtil {
      * @return 差异列表
      */
     public static <E> List<E> getListDiff(List<E> list1, List<E> list2) {
-        if (list1 == null || list1.isEmpty()) {
-            return list2 == null || list2.isEmpty() ? new ArrayList<>() : list2;
+        if (isEmpty(list2)) {
+            return new ArrayList<>();
+        }
+        if (isEmpty(list1)) {
+            return list2;
         }
 
-        if (list2 == null || list2.isEmpty()) {
-            return list1 == null || list1.isEmpty() ? new ArrayList<>() : list1;
-        }
+        // 先把列表2全部加进来
+        Set<E> diffSet = new HashSet<>(list2);
 
-        Set<E> diffSet = new HashSet<>(list1);
-        Set<E> setOfCommonElements = new HashSet<>(list2);
-
-        //先把列表2全部加进来
-        diffSet.addAll(list2);
         //调用方法保留共有元素
+        Set<E> setOfCommonElements = new HashSet<>(list2);
         setOfCommonElements.retainAll(list1);
 
         //移除共有的

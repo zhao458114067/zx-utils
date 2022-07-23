@@ -1,4 +1,4 @@
-package com.zx.utils.service;
+package com.zx.utils.repository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
