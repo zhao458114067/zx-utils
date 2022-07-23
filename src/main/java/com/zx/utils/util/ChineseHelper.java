@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 /**
  * 一些中文的操作
+ * @author zhaoxu
  */
 public final class ChineseHelper {
 
@@ -121,7 +122,11 @@ public final class ChineseHelper {
         return PATTERN_CHINESE_BY_REG.matcher(str.trim()).find();
     }
 
-    // 只能判断部分CJK字符（CJK统一汉字）
+    /**
+     * 只能判断部分CJK字符（CJK统一汉字）
+     * @param str
+     * @return
+     */
     public static boolean isChineseByName(String str) {
         if (str == null) {
             return false;
@@ -207,11 +212,11 @@ public final class ChineseHelper {
      * 18位标准身份证号
      * 方法用途：15位身份证转化为18位标准证件号
      */
-    public static String transIdCard15to18(String IdCardNO) {
+    public static String transIdCard15to18(String idCardNo) {
         String cardNo = null;
-        if (null != IdCardNO && IdCardNO.trim().length() == 15) {
-            IdCardNO = IdCardNO.trim();
-            StringBuilder sb = new StringBuilder(IdCardNO);
+        if (null != idCardNo && idCardNo.trim().length() == 15) {
+            idCardNo = idCardNo.trim();
+            StringBuilder sb = new StringBuilder(idCardNo);
             sb.insert(6, "19");
             sb.append(transCardLastNo(sb.toString()));
             cardNo = sb.toString();

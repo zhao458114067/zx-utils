@@ -21,7 +21,7 @@ public class ImageUtil {
                 final int g = (color >> 8) & 0xff;
                 final int b = color & 0xff;
                 int gray = (int) (0.3 * r + 0.59 * g + 0.11 * b);
-                int newPixel = colorToRGB(255, gray, gray, gray);
+                int newPixel = colorToRgb(255, gray, gray, gray);
                 grayBufferedImage.setRGB(i, j, newPixel);
             }
         }
@@ -39,7 +39,7 @@ public class ImageUtil {
      * @param blue
      * @return
      */
-    private static int colorToRGB(int alpha, int red, int green, int blue) {
+    private static int colorToRgb(int alpha, int red, int green, int blue) {
 
         int newPixel = 0;
         newPixel += alpha;
@@ -75,10 +75,10 @@ public class ImageUtil {
             }
         }
         //这里是阈值，白底黑字还是黑底白字，大多数情况下建议白底黑字，后面都以白底黑字为例
-        double SW = 192;
+        double sW = 192;
         for (int x = 0; x < w; x++) {
             for (int y = 0; y < h; y++) {
-                if (zuobiao[x][y] < SW) {
+                if (zuobiao[x][y] < sW) {
                     bi.setRGB(x, y, black);
                 }else{
                     bi.setRGB(x, y, white);
@@ -90,7 +90,16 @@ public class ImageUtil {
 
         return bi;
     }
-    // 自己加周围8个灰度值再除以9，算出其相对灰度值
+
+    /**
+     * // 自己加周围8个灰度值再除以9，算出其相对灰度值
+     * @param zuobiao
+     * @param x
+     * @param y
+     * @param w
+     * @param h
+     * @return
+     */
     public static double getGray(double[][] zuobiao, int x, int y, int w, int h) {
         double rs = zuobiao[x][y] + (x == 0 ? 255 : zuobiao[x - 1][y]) + (x == 0 || y == 0 ? 255 : zuobiao[x - 1][y - 1])
                 + (x == 0 || y == h - 1 ? 255 : zuobiao[x - 1][y + 1]) + (y == 0 ? 255 : zuobiao[x][y - 1])

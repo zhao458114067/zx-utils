@@ -9,6 +9,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * 压缩文档相关的工具类
  * 注意因为jre中自带的java.util.zip.*包不支持中文及加密压缩，如果需要选择使用zip4j包
+ * @author zhaoxu
  */
 public final class ZipUtil {
     /**
