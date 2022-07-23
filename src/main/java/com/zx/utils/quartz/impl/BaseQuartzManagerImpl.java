@@ -2,9 +2,9 @@ package com.zx.utils.quartz.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zx.utils.constant.Constants;
-import com.zx.utils.entity.ScheduledJobEntity;
-import com.zx.utils.repository.SchedulerJobRepository;
-import com.zx.utils.quartz.QuartzManager;
+import com.zx.utils.entity.BaseScheduledTaskEntity;
+import com.zx.utils.repository.BaseSchedulerTaskRepository;
+import com.zx.utils.quartz.BaseQuartzManager;
 import com.zx.utils.util.ListUtil;
 import com.zx.utils.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -29,13 +29,13 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class QuartzManagerImpl implements QuartzManager, ApplicationRunner {
+public class BaseQuartzManagerImpl implements BaseQuartzManager, ApplicationRunner {
     @Autowired
-    SchedulerJobRepository schedulerJobRepository;
+    BaseSchedulerTaskRepository baseSchedulerTaskRepository;
 
     Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
 
-    public QuartzManagerImpl() throws SchedulerException {
+    public BaseQuartzManagerImpl() throws SchedulerException {
     }
 
 
@@ -62,18 +62,18 @@ public class QuartzManagerImpl implements QuartzManager, ApplicationRunner {
             log.error("创建定时任务失败，jobName：{}，jobGroupName：{}", jobName, jobGroupName);
         }
 
-        List<ScheduledJobEntity> scheduledJobEntities = schedulerJobRepository.findByJobNameAndJobGroupNameAndValid(jobName, jobGroupName, Constants.VALID_TRUE);
+        List<BaseScheduledTaskEntity> scheduledJobEntities = baseSchedulerTaskRepository.findByJobNameAndJobGroupNameAndValid(jobName, jobGroupName, Constants.VALID_TRUE);
         if (ListUtil.isEmpty(scheduledJobEntities)) {
             // 持久化到数据库
-            ScheduledJobEntity scheduledJobEntity = new ScheduledJobEntity();
-            scheduledJobEntity.setJobName(jobName);
-            scheduledJobEntity.setExeOnce(exeOnce);
-            scheduledJobEntity.setJobGroupName(jobGroupName);
-            scheduledJobEntity.setJobClassName(jobClass.getName());
-            scheduledJobEntity.setCronExpression(cronExpression);
-            scheduledJobEntity.setValid(Constants.VALID_TRUE);
-            scheduledJobEntity.setParams(params.toJSONString());
-            schedulerJobRepository.save(scheduledJobEntity);
+            BaseScheduledTaskEntity baseScheduledTaskEntity = new BaseScheduledTaskEntity();
+            baseScheduledTaskEntity.setJobName(jobName);
+            baseScheduledTaskEntity.setExeOnce(exeOnce);
+            baseScheduledTaskEntity.setJobGroupName(jobGroupName);
+            baseScheduledTaskEntity.setJobClassName(jobClass.getName());
+            baseScheduledTaskEntity.setCronExpression(cronExpression);
+            baseScheduledTaskEntity.setValid(Constants.VALID_TRUE);
+            baseScheduledTaskEntity.setParams(params.toJSONString());
+            baseSchedulerTaskRepository.save(baseScheduledTaskEntity);
         }
         log.info("创建定时任务成功，jobName：{}，jobGroupName：{}", jobName, jobGroupName);
     }
@@ -89,12 +89,12 @@ public class QuartzManagerImpl implements QuartzManager, ApplicationRunner {
             log.error("删除定时任务失败，jobName：{}，jobGroupName：{}", jobName, jobGroupName);
         }
 
-        List<ScheduledJobEntity> scheduledJobEntities = schedulerJobRepository.findByJobNameAndJobGroupNameAndValid(jobName, jobGroupName, Constants.VALID_TRUE);
+        List<BaseScheduledTaskEntity> scheduledJobEntities = baseSchedulerTaskRepository.findByJobNameAndJobGroupNameAndValid(jobName, jobGroupName, Constants.VALID_TRUE);
         if (!CollectionUtils.isEmpty(scheduledJobEntities)) {
-            for (ScheduledJobEntity scheduledJobEntity : scheduledJobEntities) {
-                scheduledJobEntity.setValid(Constants.VALID_FALSE);
+            for (BaseScheduledTaskEntity baseScheduledTaskEntity : scheduledJobEntities) {
+                baseScheduledTaskEntity.setValid(Constants.VALID_FALSE);
             }
-            schedulerJobRepository.saveAll(scheduledJobEntities);
+            baseSchedulerTaskRepository.saveAll(scheduledJobEntities);
             log.info("删除定时任务成功，jobName：{}，jobGroupName：{}", jobName, jobGroupName);
         }
     }
@@ -131,17 +131,17 @@ public class QuartzManagerImpl implements QuartzManager, ApplicationRunner {
     @Async
     public void run(ApplicationArguments args) throws Exception {
         // 启动自动装配定时任务，执行之前未执行的任务
-        List<ScheduledJobEntity> scheduledJobEntities = schedulerJobRepository.findByAttr("valid", Constants.VALID_TRUE.toString());
-        for (ScheduledJobEntity scheduledJobEntity : scheduledJobEntities) {
-            String jobName = scheduledJobEntity.getJobName();
-            String jobGroupName = scheduledJobEntity.getJobGroupName();
-            String jobClassName = scheduledJobEntity.getJobClassName();
-            Boolean exeOnce = scheduledJobEntity.getExeOnce();
+        List<BaseScheduledTaskEntity> scheduledJobEntities = baseSchedulerTaskRepository.findByAttr("valid", Constants.VALID_TRUE.toString());
+        for (BaseScheduledTaskEntity baseScheduledTaskEntity : scheduledJobEntities) {
+            String jobName = baseScheduledTaskEntity.getJobName();
+            String jobGroupName = baseScheduledTaskEntity.getJobGroupName();
+            String jobClassName = baseScheduledTaskEntity.getJobClassName();
+            Boolean exeOnce = baseScheduledTaskEntity.getExeOnce();
 
             long nowTime = System.currentTimeMillis();
             // 执行参数
-            String paramsString = scheduledJobEntity.getParams();
-            String cronExpressionString = scheduledJobEntity.getCronExpression();
+            String paramsString = baseScheduledTaskEntity.getParams();
+            String cronExpressionString = baseScheduledTaskEntity.getCronExpression();
             CronExpression cronExpression = new CronExpression(cronExpressionString);
 
             // 反解析下一次的执行时间

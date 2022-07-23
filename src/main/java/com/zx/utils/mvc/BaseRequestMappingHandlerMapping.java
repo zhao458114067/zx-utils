@@ -1,6 +1,7 @@
 package com.zx.utils.mvc;
 
 import com.zx.utils.annotation.ModelMapping;
+import com.zx.utils.constant.Constants;
 import lombok.SneakyThrows;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.CollectionUtils;
@@ -51,7 +52,7 @@ public class BaseRequestMappingHandlerMapping extends RequestMappingHandlerMappi
             }
             String controllerName = strings.get(strings.size() - 1);
             String serviceApi = Character.toLowerCase(controllerName.charAt(0)) + controllerName.split("Controller")[0].substring(1);
-
+            serviceApi = Constants.URL_PREFIX + serviceApi;
             RequestCondition typeCondition = getCustomTypeCondition(handlerType);
             if (typeAnnotation != null) {
                 // 生成类上的匹配条件,并合并方法上的

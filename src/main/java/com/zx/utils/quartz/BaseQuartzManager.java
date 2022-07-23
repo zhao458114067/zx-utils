@@ -7,7 +7,7 @@ import org.quartz.Job;
  * @author ZhaoXu
  * @date 2022/5/31 17:00
  */
-public interface QuartzManager {
+public interface BaseQuartzManager {
     /**
      * 新建一个定时任务
      * @param jobClass

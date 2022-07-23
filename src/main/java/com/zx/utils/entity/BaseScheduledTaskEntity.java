@@ -16,7 +16,7 @@ import java.util.Date;
 @Table(name = "scheduled_job_zx")
 @Data
 @EntityListeners(AuditingEntityListener.class)
-public class ScheduledJobEntity {
+public class BaseScheduledTaskEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
