@@ -19,4 +19,6 @@ public interface Constants {
     String LIST_TYPE = "list";
     Integer VALID_FALSE = 0;
     Integer VALID_TRUE = 1;
+
+    String URL_PREFIX = "common/";
 }

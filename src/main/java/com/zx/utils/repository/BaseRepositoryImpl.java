@@ -1,5 +1,6 @@
 package com.zx.utils.repository;
 
+import com.zx.utils.util.DynamicObject;
 import com.zx.utils.util.ReflectUtil;
 import com.zx.utils.util.SortUtils;
 import org.springframework.beans.factory.annotation.Autowired;
