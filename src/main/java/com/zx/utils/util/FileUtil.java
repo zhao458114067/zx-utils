@@ -12,6 +12,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author zhaoxu
+ */
 public final class FileUtil {
     /**
      * Buffer的大小
@@ -52,7 +55,7 @@ public final class FileUtil {
      * @param file
      * @return
      */
-    public static String fileMD5(File file) {
+    public static String fileMd5(File file) {
         FileInputStream fileInputStream = null;
         try {
             fileInputStream = new FileInputStream(file);
@@ -576,14 +579,6 @@ public final class FileUtil {
      * @return 返回文件列表
      */
     public final static List<File> listFileFilter(File dirPath, final String postfixs) {
-        /*
-        如果在当前目录中使用Filter讲只罗列当前目录下的文件不会罗列孙子目录下的文件
-        FilenameFilter filefilter = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                return name.endsWith(postfixs);
-            }
-        };
-        */
         List<File> list = new ArrayList<File>();
         File[] files = dirPath.listFiles();
         for (File file : files) {
@@ -600,7 +595,7 @@ public final class FileUtil {
     }
 
     /**
-     * 在指定的目录下搜寻文个文件
+     * 在指定的目录下搜寻个文件
      *
      * @param dirPath  搜索的目录
      * @param fileName 搜索的文件名
@@ -613,8 +608,8 @@ public final class FileUtil {
             if (file.isDirectory()) {
                 list.addAll(searchFile(file, fileName));
             } else {
-                String Name = file.getName();
-                if (Name.equals(fileName)) {
+                String name = file.getName();
+                if (name.equals(fileName)) {
                     list.add(file);
                 }
             }

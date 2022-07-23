@@ -34,15 +34,13 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
 
     private final BaseConverter baseConverter = new BaseConverter();
 
-    private final ReflectUtil reflectUtil = new ReflectUtil();
-
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ModelMapping
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public synchronized void add(@RequestBody S entityVO) {
         E entity = baseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
         try {
-            reflectUtil.setValue(entity, "valid", 1);
+            ReflectUtil.setValue(entity, "valid", 1);
         } catch (Exception e) {
             logger.warn("没有找到属性：valid");
         }
@@ -56,7 +54,7 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     public void update(@RequestBody S entityVO) {
         E entity = baseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
         try {
-            reflectUtil.setValue(entity, "valid", 1);
+            ReflectUtil.setValue(entity, "valid", 1);
         } catch (Exception e) {
             logger.warn("没有找到属性：valid");
         }

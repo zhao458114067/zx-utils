@@ -20,6 +20,8 @@ public interface BaseRepository<T, ID extends Serializable> extends JpaRepositor
      * 分页条件查询
      *
      * @param objConditions   查询条件
+     * @param current         当前页条件
+     * @param pageSize        每页条数
      * @param excludeLikeAttr 是字符串类型，但是不使用模糊查询的字段，可为空
      * @param sortAttr        排序，可为空
      * @return Page
