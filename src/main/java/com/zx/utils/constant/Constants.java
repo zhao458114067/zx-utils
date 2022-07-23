@@ -17,4 +17,6 @@ public interface Constants {
     String UNKNOWN = "unknown";
     String COMMA = ",";
     String LIST_TYPE = "list";
+    Integer VALID_FALSE = 0;
+    Integer VALID_TRUE = 1;
 }

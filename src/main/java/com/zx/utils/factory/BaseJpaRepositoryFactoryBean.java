@@ -1,6 +1,6 @@
 package com.zx.utils.factory;
 
-import com.zx.utils.service.impl.BaseRepositoryImpl;
+import com.zx.utils.repository.BaseRepositoryImpl;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;

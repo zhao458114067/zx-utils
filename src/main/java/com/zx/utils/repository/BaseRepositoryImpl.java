@@ -1,8 +1,7 @@
-package com.zx.utils.service.impl;
+package com.zx.utils.repository;
 
-import com.zx.utils.service.BaseRepository;
-import com.zx.utils.util.SpecificationUtil;
-import com.zx.utils.util.Utils;
+import com.zx.utils.util.ReflectUtil;
+import com.zx.utils.util.SortUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -44,12 +43,12 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
     public Page<T> findByPage(Map<String, String> objConditions, Integer current, Integer pageSize, List<String> excludeLikeAttr, String sortAttr) {
         Pageable pageable;
         if (!StringUtils.isEmpty(sortAttr)) {
-            pageable = PageRequest.of(current - 1, pageSize, Utils.sortAttr(objConditions, sortAttr));
+            pageable = PageRequest.of(current - 1, pageSize, SortUtils.sortAttr(objConditions, sortAttr));
         } else {
             pageable = PageRequest.of(current - 1, pageSize);
         }
 
-        Specification<T> specification = SpecificationUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
+        Specification<T> specification = ReflectUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
         return this.findAll(specification, pageable);
     }
 
@@ -63,10 +62,10 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
      */
     @Override
     public List<T> findByConditions(Map<String, String> objConditions, List<String> excludeLikeAttr, String sortAttr) {
-        Specification<T> specification = SpecificationUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
+        Specification<T> specification = ReflectUtil.createSpecification(objConditions, clazz, excludeLikeAttr);
 
         if (!StringUtils.isEmpty(sortAttr)) {
-            return this.findAll(specification, Utils.sortAttr(objConditions, sortAttr));
+            return this.findAll(specification, SortUtils.sortAttr(objConditions, sortAttr));
         } else {
             return this.findAll(specification);
         }
@@ -78,14 +77,14 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
         List<String> strings = Arrays.asList(ids.split(","));
         if (!CollectionUtils.isEmpty(strings)) {
             //获取主键
-            List<Field> idAnnoation = SpecificationUtil.getTargetAnnoation(clazz, Id.class);
+            List<Field> idAnnoation = ReflectUtil.getTargetAnnoation(clazz, Id.class);
             if (!CollectionUtils.isEmpty(idAnnoation)) {
                 Field field = idAnnoation.get(0);
                 strings.forEach(id -> {
                     T object = this.findOneByAttr(field.getName(), id);
                     if (object != null) {
                         try {
-                            SpecificationUtil.setValue(object, "valid", 0);
+                            ReflectUtil.setValue(object, "valid", 0);
                         } catch (NoSuchFieldException e) {
                             e.printStackTrace();
                         } catch (IllegalAccessException e) {
@@ -100,7 +99,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
 
     @Override
     public T findOneByAttr(String attr, String condition) {
-        Specification<T> specification = SpecificationUtil.createOneSpecification(attr, condition);
+        Specification<T> specification = ReflectUtil.createOneSpecification(attr, condition);
         Optional<T> result = this.findOne(specification);
 
         return result.orElse(null);
@@ -108,7 +107,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
 
     @Override
     public List<T> findByAttr(String attr, String condition) {
-        Specification<T> specification = SpecificationUtil.createOneSpecification(attr, condition);
+        Specification<T> specification = ReflectUtil.createOneSpecification(attr, condition);
         return this.findAll(specification);
     }
 }

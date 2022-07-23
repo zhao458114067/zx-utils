@@ -3,14 +3,14 @@ package com.zx.utils.util;
 import com.zx.utils.constant.Constants;
 import com.zx.utils.constant.ErrorCodeEnum;
 import com.zx.utils.exception.BaseException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.*;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -22,9 +22,8 @@ import java.util.*;
  *
  * @author : zhaoxu
  */
-public class SpecificationUtil {
-    static final Logger logger = LoggerFactory.getLogger(SpecificationUtil.class);
-
+@Slf4j
+public class ReflectUtil {
     /**
      * 生成全属性条件查询通用Specification
      *
@@ -47,7 +46,7 @@ public class SpecificationUtil {
                     predicates.add(cb.equal(root.get(Constants.VALID), 1));
                 }
             } catch (NoSuchFieldException e) {
-                logger.warn("没有找到属性：valid");
+                log.warn("没有找到属性：valid");
             }
 
             Field[] declaredFields = clazz.getDeclaredFields();
@@ -112,7 +111,7 @@ public class SpecificationUtil {
                     predicates.add(cb.equal(root.get(Constants.VALID), 1));
                 }
             } catch (Exception e) {
-                logger.warn("没有找到属性：valid");
+                log.warn("没有找到属性：valid");
             }
 
             //外键关联查询
