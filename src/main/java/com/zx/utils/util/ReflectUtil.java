@@ -277,6 +277,31 @@ public class ReflectUtil {
     }
 
     /**
+     * 获取所有属性值，自动转为字符串
+     *
+     * @param object object
+     * @return Map
+     * @throws IllegalAccessException IllegalAccessException
+     */
+    public static Map<String, String> getStringValues(Object object) throws IllegalAccessException {
+        if (object == null) {
+            return new HashMap<>(8);
+        }
+        Map<String, String> fieldValuesMap = new HashMap(8);
+        Class<?> clazz = object.getClass();
+        if (clazz != null) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field field : fields) {
+                field.setAccessible(true);
+                Object fieldValue = field.get(object);
+                fieldValuesMap.put(field.getName(), fieldValue.toString());
+            }
+            return fieldValuesMap;
+        }
+        return fieldValuesMap;
+    }
+
+    /**
      * 获取拥有指定注解的字段
      *
      * @param objectClass 对象

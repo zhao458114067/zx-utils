@@ -1,7 +1,10 @@
-package com.zx.utils.controller;
+package com.zx.utils.controller.vo;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +12,10 @@ import java.util.List;
  * @date 2022/7/24 1:58
  */
 @Data
-public class PageVO<S> {
+@NoArgsConstructor
+@AllArgsConstructor
+public class PageVO<S> implements Serializable {
+    private static final long serialVersionUID = -3355752076145642645L;
     /**
      * 总数
      */

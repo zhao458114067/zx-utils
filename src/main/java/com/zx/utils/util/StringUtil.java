@@ -62,4 +62,13 @@ public class StringUtil {
     public static boolean isEmpty(final Object str) {
         return (str == null) || (str.toString().length() == 0);
     }
+    /**
+     * 判断不为空
+     * @param str
+     * @return
+     */
+    public static boolean isNotEmpty(final Object str) {
+        return !isEmpty(str);
+    }
+
 }

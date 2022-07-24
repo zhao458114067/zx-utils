@@ -1,6 +1,6 @@
 package com.zx.utils.util;
 
-import com.zx.utils.controller.PageVO;
+import com.zx.utils.controller.vo.PageVO;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
@@ -56,7 +56,7 @@ public class BaseConverter {
 
     public <S, D> PageVO<D> convertMultiObjectToMap(Page<S> srcPages, Class<D> destClass) {
         PageVO<D> pageVO = new PageVO<>();
-        List<D> destList = new ArrayList();
+        List<D> destList = new ArrayList<>();
         if (srcPages != null && srcPages.getContent() != null) {
             Iterator var6 = srcPages.getContent().iterator();
 

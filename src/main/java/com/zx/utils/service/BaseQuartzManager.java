@@ -1,4 +1,4 @@
-package com.zx.utils.quartz;
+package com.zx.utils.service;
 
 import com.alibaba.fastjson.JSONObject;
 import org.quartz.Job;
