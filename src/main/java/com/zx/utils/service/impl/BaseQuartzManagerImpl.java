@@ -1,10 +1,10 @@
-package com.zx.utils.quartz.impl;
+package com.zx.utils.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.zx.utils.constant.Constants;
 import com.zx.utils.entity.BaseScheduledTaskEntity;
 import com.zx.utils.repository.BaseSchedulerTaskRepository;
-import com.zx.utils.quartz.BaseQuartzManager;
+import com.zx.utils.service.BaseQuartzManager;
 import com.zx.utils.util.ListUtil;
 import com.zx.utils.util.TimeUtil;
 import lombok.extern.slf4j.Slf4j;

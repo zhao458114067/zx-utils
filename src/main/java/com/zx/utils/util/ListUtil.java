@@ -123,5 +123,16 @@ public class ListUtil {
     public static <E> Boolean isEmpty(List<E> list) {
         return list == null || list.size() == 0;
     }
+
+    /**
+     * 判断列表不为空
+     *
+     * @param list
+     * @param <E>
+     * @return
+     */
+    public static <E> Boolean isNotEmpty(List<E> list) {
+        return !isEmpty(list);
+    }
 }
 

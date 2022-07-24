@@ -2,6 +2,7 @@ package com.zx.utils.controller;
 
 import com.zx.utils.annotation.ModelMapping;
 import com.zx.utils.constant.Constants;
+import com.zx.utils.controller.vo.PageVO;
 import com.zx.utils.repository.BaseRepository;
 import com.zx.utils.util.BaseConverter;
 import com.zx.utils.util.ReflectUtil;
@@ -101,15 +102,15 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     @ModelMapping
     @ApiOperation(value = "多条件组合查询所有", notes = "")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "objConditions", value = "对象条件，字符串类型属性默认使用模糊查询例：?id=1,2,3&name=5201"),
             @ApiImplicitParam(name = Constants.SORTER, value = "排序条件：sorter={\"id\":\"descend\"}，ascend升序，descend降序"),
             @ApiImplicitParam(name = "excludeLikeAttr", value = "是字符串类型属性但不使用模糊查询的字段，逗号隔开")
     })
-    public List<S> findAllByConditions(@RequestParam(required = false) Map<String, String> objConditions,
+    public List<S> findAllByConditions(@RequestBody(required = false) S reqObj,
+                                       @RequestParam(required = false) Map<String, String> reqReplaceMap,
                                        @RequestParam(name = Constants.SORTER, required = false) String sorter,
-                                       @RequestParam(name = "excludeLikeAttr", defaultValue = "", required = false) String excludeLikeAttr) {
+                                       @RequestParam(name = "excludeLikeAttr", defaultValue = "", required = false) String excludeLikeAttr) throws IllegalAccessException {
         List<String> excludeAttrs = Arrays.asList(excludeLikeAttr.split(","));
-        List<E> byConditions = baseRepository.findByConditions(objConditions, excludeAttrs, sorter);
+        List<E> byConditions = baseRepository.findByConditions(reqReplaceMap, excludeAttrs, sorter);
         return baseConverter.convertMultiObjectToList(byConditions, (Class<S>) actualTypeArguments[0]);
     }
 
@@ -117,19 +118,19 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     @ModelMapping
     @ApiOperation(value = "多条件组合分页查询", notes = "")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "objConditions", value = "对象条件，字符串类型属性默认使用模糊查询例：?id=1,2,3&name=5201"),
             @ApiImplicitParam(name = Constants.SORTER, value = "排序条件：sorter={\"id\":\"descend\"}，ascend升序，descend降序"),
             @ApiImplicitParam(name = "excludeLikeAttr", value = "是字符串类型属性但不使用模糊查询的字段，逗号隔开"),
             @ApiImplicitParam(name = Constants.CURRENT, value = "当前页默认第 1 页"),
             @ApiImplicitParam(name = Constants.PAGE_SIZE, value = "每页数据条数默认 20 条")
     })
-    public PageVO<S> findByPage(@RequestParam(required = false) Map<String, String> objConditions,
-                                          @RequestParam(name = Constants.SORTER, required = false) String sorter,
-                                          @RequestParam(name = "excludeLikeAttr", defaultValue = "", required = false) String excludeLikeAttr,
-                                          @RequestParam(name = Constants.CURRENT, required = false, defaultValue = "1") Integer current,
-                                          @RequestParam(name = Constants.PAGE_SIZE, required = false, defaultValue = "20") Integer pageSize) {
+    public PageVO<S> findByPage(@RequestBody(required = false) S reqObj,
+                                @RequestParam(required = false) Map<String, String> reqReplaceMap,
+                                @RequestParam(name = Constants.SORTER, required = false) String sorter,
+                                @RequestParam(name = "excludeLikeAttr", defaultValue = "", required = false) String excludeLikeAttr,
+                                @RequestParam(name = Constants.CURRENT, required = false, defaultValue = "1") Integer current,
+                                @RequestParam(name = Constants.PAGE_SIZE, required = false, defaultValue = "20") Integer pageSize) throws IllegalAccessException {
         List<String> excludeAttrs = Arrays.asList(excludeLikeAttr.split(","));
-        Page<E> byPage = baseRepository.findByPage(objConditions, current, pageSize, excludeAttrs, sorter);
+        Page<E> byPage = baseRepository.findByPage(reqReplaceMap, current, pageSize, excludeAttrs, sorter);
         return (PageVO<S>) baseConverter.convertMultiObjectToMap(byPage, (Class<?>) actualTypeArguments[0]);
     }
 
