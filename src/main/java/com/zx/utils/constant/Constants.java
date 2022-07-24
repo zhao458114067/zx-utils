@@ -203,7 +203,7 @@ public interface Constants {
                     "@Slf4j\n" +
                     "@RestController\n" +
                     "@RequestMapping(\"/$!{mainPath}\")\n" +
-                    "@Api(description = \"$!{className}Controller\", tags = {\"$!{comments}\"})\n" +
+                    "@Api(tags = {\"$!{className}Controller\"}, description = \"$!{comments}\")\n" +
                     "public class $!{className}Controller extends BaseControllerModel<$!{className}Entity, $!{className}Entity> {\n" +
                     "\n" +
                     "}" );
@@ -219,6 +219,7 @@ public interface Constants {
                     "import io.swagger.annotations.ApiModelProperty;\n" +
                     "import org.springframework.data.annotation.CreatedDate;\n" +
                     "import org.springframework.data.annotation.LastModifiedDate;\n" +
+                    "import org.springframework.data.jpa.domain.support.AuditingEntityListener;\n" +
                     "import com.fasterxml.jackson.annotation.JsonIgnoreProperties;\n" +
                     "import lombok.Data;\n" +
                     "import lombok.NoArgsConstructor;\n" +
@@ -235,6 +236,7 @@ public interface Constants {
                     "@JsonIgnoreProperties(ignoreUnknown = true)\n" +
                     "@Data\n" +
                     "@NoArgsConstructor\n" +
+                    "@EntityListeners(AuditingEntityListener.class)\n" +
                     "public class $!{className}Entity implements Serializable {\n" +
                     "    private static final long serialVersionUID = 1L;\n" +
                     "\n" +
@@ -253,6 +255,21 @@ public interface Constants {
                     "    #end\n" +
                     "\n" +
                     "  #end\n" +
+                    "\n" +
+                    "    @ApiModelProperty(value = \"创建时间\")\n" +
+                    "    @CreatedDate\n" +
+                    "    @Column(name = \"gmt_create\", updatable = false)\n" +
+                    "    @Temporal(TemporalType.TIMESTAMP)\n" +
+                    "    private Date gmtCreate;\n" +
+                    "    @ApiModelProperty(value = \"修改时间\")\n" +
+                    "    @LastModifiedDate\n" +
+                    "    @Column(name = \"gmt_modified\", insertable = false)\n" +
+                    "    @Temporal(TemporalType.TIMESTAMP)\n" +
+                    "    private Date gmtModified;\n" +
+                    "\n" +
+                    "    @ApiModelProperty(value = \"状态值\")\n" +
+                    "    @Column(name = \"valid\", columnDefinition = \"integer\")\n" +
+                    "    private Integer valid;\n" +
                     "}\n" );
             put("Repository.java.vm", "package $!{package}.$!{moduleName}.repository;\n" +
                     "\n" +

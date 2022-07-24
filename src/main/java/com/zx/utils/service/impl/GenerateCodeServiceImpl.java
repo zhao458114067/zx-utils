@@ -166,6 +166,7 @@ public class GenerateCodeServiceImpl implements GenerateCodeService {
         //数据库类型
         String dataBaseType = request.getPrepend().split(":" )[1];
         String queryColumnSql = null;
+        params.add(tableName);
         switch (dataBaseType) {
             //Mysql
             case Constants.MYSQL:
@@ -184,7 +185,6 @@ public class GenerateCodeServiceImpl implements GenerateCodeService {
                         "where\n" +
                         "\ttable_name = ?\n" +
                         "\tand table_schema = ?";
-                params.add(tableName);
                 params.add(schemaName);
                 break;
 
@@ -213,7 +213,7 @@ public class GenerateCodeServiceImpl implements GenerateCodeService {
                         "\t\tpg_class,\n" +
                         "\t\tpg_attribute\n" +
                         "\twhere\n" +
-                        "\t\tpg_class.oid = 'tank_info' :: regclass\n" +
+                        "\t\tpg_class.oid = ? :: regclass\n" +
                         "\t\tand pg_index.indrelid = pg_class.oid\n" +
                         "\t\tand pg_attribute.attrelid = pg_class.oid\n" +
                         "\t\tand pg_attribute.attnum = any (pg_index.indkey)\n" +
