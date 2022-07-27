@@ -36,7 +36,7 @@ public final class FileUtil {
      *
      * @param strFile
      */
-    public static StringBuffer readFile(String strFile) throws IOException {
+    public static StringBuffer readFileByLine(String strFile) throws IOException {
         StringBuffer strSb = new StringBuffer();
         InputStreamReader inStrR = new InputStreamReader(new FileInputStream(strFile), "UTF-8");
         // character streams
@@ -668,6 +668,25 @@ public final class FileUtil {
                 allFileList.add(file);
             }
         }
+    }
+
+    /**
+     * 一次性读取全部文件数据
+     *
+     * @param strFile
+     */
+    public static String readFileAll(String strFile) {
+        try {
+            InputStream is = new FileInputStream(strFile);
+            int iAvail = is.available();
+            byte[] bytes = new byte[iAvail];
+            is.read(bytes);
+            is.close();
+            return new String(bytes);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }
 
