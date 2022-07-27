@@ -1,6 +1,9 @@
 package com.zx.utils.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
@@ -8,9 +11,7 @@ import lombok.NoArgsConstructor;
 import net.sf.cglib.beans.BeanGenerator;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author: zhaoxu
@@ -22,7 +23,7 @@ public class DynamicObject {
 
     Object dynamicBean;
 
-    private static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     Class clazz;
 
@@ -203,7 +204,7 @@ public class DynamicObject {
      * @return JsonNode对象
      */
     public JsonNode get(String property) {
-        JsonNode jsonNode = objectMapper.valueToTree(dynamicBean);
+        JsonNode jsonNode = OBJECT_MAPPER.valueToTree(dynamicBean);
         return jsonNode.get(property);
     }
 
@@ -238,5 +239,48 @@ public class DynamicObject {
             }
         }
         return generator.create();
+    }
+
+
+    /**
+     * 转换请求返回的data数据
+     *
+     * @param object
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public static <T> T convertDataToJavaBean(Object object, Class<T> tClass) {
+        try {
+            String jsonString = OBJECT_MAPPER.writeValueAsString(object);
+            JSONObject jsonObject = JSON.parseObject(jsonString);
+            // 实体
+            return JSON.toJavaObject(jsonObject, tClass);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * 转换请求返回的data数据
+     *
+     * @param object
+     * @param tClass
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> convertDataToJavaBeanList(Object object, Class<T> tClass) {
+        List<T> list = new ArrayList<>();
+        try {
+            String jsonString = OBJECT_MAPPER.writeValueAsString(object);
+            JSONArray jsonArray = JSONArray.parseArray(jsonString);
+            for (Object arrayObj : jsonArray) {
+                T t = convertDataToJavaBean(arrayObj, tClass);
+                list.add(t);
+            }
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 }

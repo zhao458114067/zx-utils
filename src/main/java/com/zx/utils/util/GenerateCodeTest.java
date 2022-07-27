@@ -22,6 +22,7 @@ public class GenerateCodeTest {
     static String mainPath = "oms";
 
     public static void main(String[] args) throws SQLException, NoSuchFieldException, IllegalAccessException {
+
         //设置请求参数
         TableRequestVO tableRequestVO = new TableRequestVO();
         tableRequestVO.setUsername(userName);
