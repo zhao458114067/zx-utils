@@ -15,11 +15,11 @@ import java.util.*;
  * @author : zhaoxu
  */
 @Component
-public class BaseConverter {
-    private static final Logger log = LoggerFactory.getLogger(BaseConverter.class);
+public class MyBaseConverter {
+    private static final Logger log = LoggerFactory.getLogger(MyBaseConverter.class);
     Mapper beanMapper = new DozerBeanMapper();
 
-    public BaseConverter() {
+    public MyBaseConverter() {
     }
 
     public <S, D> D convertSingleObject(S source, Class<D> clazz) {

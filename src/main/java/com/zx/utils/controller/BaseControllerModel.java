@@ -4,7 +4,7 @@ import com.zx.utils.annotation.ModelMapping;
 import com.zx.utils.constant.Constants;
 import com.zx.utils.controller.vo.PageVO;
 import com.zx.utils.repository.BaseRepository;
-import com.zx.utils.util.BaseConverter;
+import com.zx.utils.util.MyBaseConverter;
 import com.zx.utils.util.ReflectUtil;
 import com.zx.utils.util.SpringManager;
 import io.swagger.annotations.ApiImplicitParam;
@@ -36,14 +36,14 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
 
     private Type[] actualTypeArguments;
 
-    private final BaseConverter baseConverter = new BaseConverter();
+    private final MyBaseConverter myBaseConverter = new MyBaseConverter();
 
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ModelMapping
     @ApiOperation(value = "新增", notes = "")
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public synchronized void add(@RequestBody S entityVO) {
-        E entity = baseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
+        E entity = myBaseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
         try {
             ReflectUtil.setValue(entity, "valid", 1);
         } catch (Exception e) {
@@ -58,7 +58,7 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     @ApiOperation(value = "更新", notes = "必须传数据库id值")
     @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
     public void update(@RequestBody S entityVO) {
-        E entity = baseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
+        E entity = myBaseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
         try {
             ReflectUtil.setValue(entity, "valid", 1);
         } catch (Exception e) {
@@ -83,7 +83,7 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
             @ApiImplicitParam(name = "condition", value = "条件例如：1", required = true)
     })
     public S findOneByAttr(@PathVariable String attr, @PathVariable String condition) {
-        return baseConverter.convertSingleObject(baseRepository.findOneByAttr(attr, condition), (Class<S>) actualTypeArguments[0]);
+        return myBaseConverter.convertSingleObject(baseRepository.findOneByAttr(attr, condition), (Class<S>) actualTypeArguments[0]);
     }
 
     @RequestMapping(path = "/list/{attr}/{condition}", method = RequestMethod.GET)
@@ -95,12 +95,12 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     })
     public List<S> findByAttrs(@PathVariable String attr,
                                @PathVariable String condition) {
-        return baseConverter.convertMultiObjectToList((List<?>) baseRepository.findByAttr(attr, condition), (Class<S>) actualTypeArguments[0]);
+        return myBaseConverter.convertMultiObjectToList((List<?>) baseRepository.findByAttr(attr, condition), (Class<S>) actualTypeArguments[0]);
     }
 
     @RequestMapping(path = "/findAll", method = RequestMethod.GET)
     @ModelMapping
-    @ApiOperation(value = "多条件组合查询所有", notes = "")
+    @ApiOperation(value = "多条件组合查询所有，字符串默认使用模糊搜索", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = Constants.SORTER, value = "排序条件：sorter={\"id\":\"descend\"}，ascend升序，descend降序"),
             @ApiImplicitParam(name = "excludeLikeAttr", value = "是字符串类型属性但不使用模糊查询的字段，逗号隔开")
@@ -111,12 +111,12 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
                                        @RequestParam(name = "excludeLikeAttr", defaultValue = "", required = false) String excludeLikeAttr) throws IllegalAccessException {
         List<String> excludeAttrs = Arrays.asList(excludeLikeAttr.split(","));
         List<E> byConditions = baseRepository.findByConditions(reqReplaceMap, excludeAttrs, sorter);
-        return baseConverter.convertMultiObjectToList(byConditions, (Class<S>) actualTypeArguments[0]);
+        return myBaseConverter.convertMultiObjectToList(byConditions, (Class<S>) actualTypeArguments[0]);
     }
 
     @RequestMapping(path = "/findByPage", method = RequestMethod.GET)
     @ModelMapping
-    @ApiOperation(value = "多条件组合分页查询", notes = "")
+    @ApiOperation(value = "多条件组合分页查询，字符串默认使用模糊搜索", notes = "")
     @ApiImplicitParams({
             @ApiImplicitParam(name = Constants.SORTER, value = "排序条件：sorter={\"id\":\"descend\"}，ascend升序，descend降序"),
             @ApiImplicitParam(name = "excludeLikeAttr", value = "是字符串类型属性但不使用模糊查询的字段，逗号隔开"),
@@ -131,7 +131,7 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
                                 @RequestParam(name = Constants.PAGE_SIZE, required = false, defaultValue = "20") Integer pageSize) throws IllegalAccessException {
         List<String> excludeAttrs = Arrays.asList(excludeLikeAttr.split(","));
         Page<E> byPage = baseRepository.findByPage(reqReplaceMap, current, pageSize, excludeAttrs, sorter);
-        return (PageVO<S>) baseConverter.convertMultiObjectToMap(byPage, (Class<?>) actualTypeArguments[0]);
+        return (PageVO<S>) myBaseConverter.convertMultiObjectToMap(byPage, (Class<?>) actualTypeArguments[0]);
     }
 
     @Override
