@@ -14,7 +14,7 @@ import java.util.Date;
  * @date 2022/5/31 19:12
  */
 @Entity
-@Table(name = "scheduled_job_zx")
+@Table(name = "scheduled_job_commons")
 @Data
 @EntityListeners(AuditingEntityListener.class)
 public class BaseScheduledTaskEntity implements Serializable {

@@ -86,7 +86,7 @@ public class HttpClientUtil {
      * @return
      * @throws IOException
      */
-    public static String get(JSONObject headers, String url, JSONObject params) throws IOException {
+    public static String get(JSONObject headers, String url, JSONObject params) {
         CloseableHttpClient httpClient = getHttpClient();
         CloseableHttpResponse closeableHttpResponse = null;
         // 创建get请求
@@ -99,10 +99,14 @@ public class HttpClientUtil {
                 paramList.add(new BasicNameValuePair(paramName, params.get(paramName).toString()));
             }
         }
-        if (url.contains(Constants.QUESTION)) {
-            httpGet = new HttpGet(url + "&" + EntityUtils.toString(new UrlEncodedFormEntity(paramList, Consts.UTF_8)));
-        } else {
-            httpGet = new HttpGet(url + "?" + EntityUtils.toString(new UrlEncodedFormEntity(paramList, Consts.UTF_8)));
+        try {
+            if (url.contains(Constants.QUESTION)) {
+                httpGet = new HttpGet(url + "&" + EntityUtils.toString(new UrlEncodedFormEntity(paramList, Consts.UTF_8)));
+            } else {
+                httpGet = new HttpGet(url + "?" + EntityUtils.toString(new UrlEncodedFormEntity(paramList, Consts.UTF_8)));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         if (headers != null) {
@@ -115,11 +119,15 @@ public class HttpClientUtil {
         httpGet.setConfig(requestConfig);
         httpGet.addHeader("Content-Type", "application/json");
         httpGet.addHeader("lastOperaTime", String.valueOf(System.currentTimeMillis()));
-        closeableHttpResponse = httpClient.execute(httpGet);
-        HttpEntity entity = closeableHttpResponse.getEntity();
-        String response = EntityUtils.toString(entity);
-        closeResponse(closeableHttpResponse);
-        return response;
+        try {
+            closeableHttpResponse = httpClient.execute(httpGet);
+            HttpEntity entity = closeableHttpResponse.getEntity();
+            String response = EntityUtils.toString(entity);
+            closeResponse(closeableHttpResponse);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -131,7 +139,7 @@ public class HttpClientUtil {
      * @return
      * @throws IOException
      */
-    public static String post(JSONObject headers, String url, JSONObject params) throws IOException {
+    public static String post(JSONObject headers, String url, JSONObject params) {
         CloseableHttpClient httpClient = getHttpClient();
         CloseableHttpResponse closeableHttpResponse = null;
         // 创建post请求
@@ -150,11 +158,16 @@ public class HttpClientUtil {
             StringEntity stringEntity = new StringEntity(params.toJSONString(), "UTF-8");
             httpPost.setEntity(stringEntity);
         }
-        closeableHttpResponse = httpClient.execute(httpPost);
-        HttpEntity entity = closeableHttpResponse.getEntity();
-        String response = EntityUtils.toString(entity);
-        closeResponse(closeableHttpResponse);
-        return response;
+        try {
+            closeableHttpResponse = httpClient.execute(httpPost);
+            HttpEntity entity = closeableHttpResponse.getEntity();
+            String response = EntityUtils.toString(entity);
+            closeResponse(closeableHttpResponse);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
@@ -165,7 +178,7 @@ public class HttpClientUtil {
      * @return
      * @throws IOException
      */
-    public static String delete(JSONObject headers, String url, JSONObject params) throws IOException {
+    public static String delete(JSONObject headers, String url, JSONObject params) {
         CloseableHttpClient httpClient = getHttpClient();
         CloseableHttpResponse closeableHttpResponse = null;
         // 创建delete请求，HttpDeleteWithBody 为内部类，类在下面
@@ -184,11 +197,16 @@ public class HttpClientUtil {
             StringEntity stringEntity = new StringEntity(params.toJSONString(), "UTF-8");
             httpDelete.setEntity(stringEntity);
         }
-        closeableHttpResponse = httpClient.execute(httpDelete);
-        HttpEntity entity = closeableHttpResponse.getEntity();
-        String response = EntityUtils.toString(entity);
-        closeResponse(closeableHttpResponse);
-        return response;
+        try {
+            closeableHttpResponse = httpClient.execute(httpDelete);
+            HttpEntity entity = closeableHttpResponse.getEntity();
+            String response = EntityUtils.toString(entity);
+            closeResponse(closeableHttpResponse);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     /**
@@ -199,7 +217,7 @@ public class HttpClientUtil {
      * @return
      * @throws IOException
      */
-    public static String put(JSONObject headers, String url, JSONObject params) throws IOException {
+    public static String put(JSONObject headers, String url, JSONObject params) {
         CloseableHttpClient httpClient = getHttpClient();
         CloseableHttpResponse closeableHttpResponse = null;
         // 创建put请求
@@ -218,12 +236,17 @@ public class HttpClientUtil {
             StringEntity stringEntity = new StringEntity(params.toJSONString(), "UTF-8");
             httpPut.setEntity(stringEntity);
         }
-        // 从响应模型中获得具体的实体
-        closeableHttpResponse = httpClient.execute(httpPut);
-        HttpEntity entity = closeableHttpResponse.getEntity();
-        String response = EntityUtils.toString(entity);
-        closeResponse(closeableHttpResponse);
-        return response;
+        try {
+            // 从响应模型中获得具体的实体
+            closeableHttpResponse = httpClient.execute(httpPut);
+            HttpEntity entity = closeableHttpResponse.getEntity();
+            String response = EntityUtils.toString(entity);
+            closeResponse(closeableHttpResponse);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     public static class HttpDeleteWithBody extends HttpEntityEnclosingRequestBase {
@@ -249,4 +272,3 @@ public class HttpClientUtil {
         }
     }
 }
-
