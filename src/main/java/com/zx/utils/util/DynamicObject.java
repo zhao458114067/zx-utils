@@ -1,7 +1,6 @@
 package com.zx.utils.util;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -21,18 +20,13 @@ import java.util.*;
 @NoArgsConstructor
 public class DynamicObject {
 
-    Object dynamicBean;
+    private Object dynamicBean;
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     Class clazz;
 
-    public DynamicObject(Map dynAttrMap) {
-        this.dynamicBean = generateBean(dynAttrMap);
-        clazz = dynamicBean.getClass();
-    }
-
-    public DynamicObject(Object object) throws IllegalAccessException, NoSuchFieldException {
+    public DynamicObject(Object object) {
         dynamicBean = generateBean(getFields(object));
         Map<String, Object> values = getValues(object);
         Iterator<String> iterator = values.keySet().iterator();
@@ -44,15 +38,15 @@ public class DynamicObject {
         clazz = dynamicBean.getClass();
     }
 
-    public static DynamicObject parseMap(Map<String, Object> targetMap) throws NoSuchFieldException, IllegalAccessException {
-        DynamicObject dynmicVO = new DynamicObject();
+    public static DynamicObject parseMap(Map<String, Object> targetMap) {
+        DynamicObject dynamicObject = new DynamicObject();
         for (Map.Entry<String, Object> entry : targetMap.entrySet()) {
-            dynmicVO.put(entry.getKey(), entry.getValue());
+            dynamicObject.put(entry.getKey(), entry.getValue());
         }
-        return dynmicVO;
+        return dynamicObject;
     }
 
-    public static DynamicObject parseString(String jsonString) throws NoSuchFieldException, IllegalAccessException {
+    public static DynamicObject parseString(String jsonString) {
         JSONObject jsonObject = JSONObject.parseObject(jsonString);
         return parseMap(jsonObject);
     }
@@ -63,14 +57,18 @@ public class DynamicObject {
      * @return
      * @throws IllegalAccessException
      */
-    public Map<String, Object> getValues() throws IllegalAccessException {
+    public Map<String, Object> getValues() {
         Map<String, Object> fieldValuesMap = new HashMap<>(16);
         if (clazz != null) {
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
-                Object fieldValue = field.get(dynamicBean);
-                fieldValuesMap.put(field.getName().split("\\$cglib_prop_")[1], fieldValue);
+                try {
+                    Object fieldValue = field.get(dynamicBean);
+                    fieldValuesMap.put(field.getName().split("\\$cglib_prop_")[1], fieldValue);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
             return fieldValuesMap;
         }
@@ -83,15 +81,19 @@ public class DynamicObject {
      * @return
      * @throws IllegalAccessException
      */
-    public Map<String, Object> getValues(Object object) throws IllegalAccessException {
+    public Map<String, Object> getValues(Object object) {
         Map<String, Object> fieldValuesMap = new HashMap<>(16);
         Class<?> clazz = object.getClass();
         if (clazz != null) {
             Field[] fields = clazz.getDeclaredFields();
             for (Field field : fields) {
                 field.setAccessible(true);
-                Object fieldValue = field.get(object);
-                fieldValuesMap.put(field.getName(), fieldValue);
+                try {
+                    Object fieldValue = field.get(object);
+                    fieldValuesMap.put(field.getName(), fieldValue);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                }
             }
             return fieldValuesMap;
         }
@@ -106,7 +108,7 @@ public class DynamicObject {
      * @throws NoSuchFieldException
      * @throws IllegalAccessException
      */
-    public void put(String property, Object value) throws IllegalAccessException, NoSuchFieldException {
+    public void put(String property, Object value) {
         Field declaredField;
         try {
             declaredField = clazz.getDeclaredField("$cglib_prop_" + property);
@@ -124,14 +126,22 @@ public class DynamicObject {
             while (iterator.hasNext()) {
                 String putKey = iterator.next();
                 Object putValue = values.get(putKey);
-                Field field = clazz.getDeclaredField("$cglib_prop_" + putKey);
-                field.setAccessible(true);
-                field.set(dynamicBean, putValue);
+                try {
+                    Field field = clazz.getDeclaredField("$cglib_prop_" + putKey);
+                    field.setAccessible(true);
+                    field.set(dynamicBean, putValue);
+                } catch (NoSuchFieldException | IllegalAccessException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
             return;
         }
         declaredField.setAccessible(true);
-        declaredField.set(dynamicBean, value);
+        try {
+            declaredField.set(dynamicBean, value);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
@@ -165,7 +175,7 @@ public class DynamicObject {
         }
     }
 
-    public Map<String, Class<?>> getFields() throws IllegalAccessException {
+    public Map<String, Class<?>> getFields() {
         Map<String, Class<?>> attrMap = new HashMap<>(16);
         if (clazz != null) {
             Iterator<String> iterator = getValues().keySet().iterator();
@@ -184,7 +194,7 @@ public class DynamicObject {
      * @return
      * @throws IllegalAccessException
      */
-    public Map<String, Class<?>> getFields(Object object) throws IllegalAccessException {
+    public Map<String, Class<?>> getFields(Object object) {
         Class<?> clazz = object.getClass();
         Map<String, Class<?>> attrMap = new HashMap<>(16);
         if (clazz != null) {
@@ -241,18 +251,27 @@ public class DynamicObject {
         return generator.create();
     }
 
+    /**
+     * 获取返回的data数据
+     *
+     * @param response
+     * @return
+     */
+    public static JsonNode getResponseData(Map<String, Object> response) {
+        return parseMap(response).get("result").get("data");
+    }
 
     /**
      * 转换请求返回的data数据
      *
-     * @param object
+     * @param jsonNode
      * @param tClass
      * @param <T>
      * @return
      */
-    public static <T> T convertDataToJavaBean(Object object, Class<T> tClass) {
+    public static <T> T convertDataToJavaBean(JsonNode jsonNode, Class<T> tClass) {
         try {
-            String jsonString = OBJECT_MAPPER.writeValueAsString(object);
+            String jsonString = OBJECT_MAPPER.writeValueAsString(jsonNode);
             JSONObject jsonObject = JSON.parseObject(jsonString);
             // 实体
             return JSON.toJavaObject(jsonObject, tClass);
@@ -264,22 +283,16 @@ public class DynamicObject {
     /**
      * 转换请求返回的data数据
      *
-     * @param object
+     * @param jsonNode
      * @param tClass
      * @param <T>
      * @return
      */
-    public static <T> List<T> convertDataToJavaBeanList(Object object, Class<T> tClass) {
+    public static <T> List<T> convertDataToJavaBeanList(JsonNode jsonNode, Class<T> tClass) {
         List<T> list = new ArrayList<>();
-        try {
-            String jsonString = OBJECT_MAPPER.writeValueAsString(object);
-            JSONArray jsonArray = JSONArray.parseArray(jsonString);
-            for (Object arrayObj : jsonArray) {
-                T t = convertDataToJavaBean(arrayObj, tClass);
-                list.add(t);
-            }
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+        for (JsonNode node : jsonNode) {
+            T t = convertDataToJavaBean(node, tClass);
+            list.add(t);
         }
         return list;
     }
