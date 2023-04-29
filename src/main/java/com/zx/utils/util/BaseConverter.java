@@ -1,25 +1,27 @@
 package com.zx.utils.util;
 
 import com.zx.utils.controller.vo.PageVO;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * @author : zhaoxu
+ * @author: zhaoxu
  */
-@Component
-public class MyBaseConverter {
-    private static final Logger log = LoggerFactory.getLogger(MyBaseConverter.class);
+public class BaseConverter {
+    private static final Logger log = LoggerFactory.getLogger(BaseConverter.class);
     Mapper beanMapper = new DozerBeanMapper();
 
-    public MyBaseConverter() {
+    public BaseConverter() {
     }
 
     public <S, D> D convertSingleObject(S source, Class<D> clazz) {
@@ -30,8 +32,8 @@ public class MyBaseConverter {
 
             try {
                 dest = beanMapper.map(source, clazz);
-            } catch (Exception var5) {
-                log.error("初始化{}对象失败。", clazz, var5);
+            } catch (Exception e) {
+                log.error("初始化{}对象失败。", clazz, e);
             }
 
             return dest;
@@ -42,34 +44,26 @@ public class MyBaseConverter {
         if (CollectionUtils.isEmpty(sourceList)) {
             return null;
         } else {
-            List<D> toList = new ArrayList();
-            Iterator var4 = sourceList.iterator();
-
-            while (var4.hasNext()) {
-                Object src = var4.next();
+            List<D> toList = new ArrayList<>();
+            for (S src : sourceList) {
                 toList.add(this.convertSingleObject(src, destClass));
             }
-
             return toList;
         }
     }
 
-    public <S, D> PageVO<D> convertMultiObjectToMap(Page<S> srcPages, Class<D> destClass) {
-        PageVO<D> pageVO = new PageVO<>();
+    public <S, D> PageVO<D> convertMultiObjectToPage(Page<S> srcPages, Class<D> destClass) {
+        PageVO<D> pageResponse = new PageVO<>();
         List<D> destList = new ArrayList<>();
         if (srcPages != null && srcPages.getContent() != null) {
-            Iterator var6 = srcPages.getContent().iterator();
-
-            while (var6.hasNext()) {
-                Object src = var6.next();
-                destList.add(this.convertSingleObject(src, destClass));
+            for (S srcPage : srcPages) {
+                destList.add(this.convertSingleObject(srcPage, destClass));
             }
         }
-
-        pageVO.setTotal(srcPages.getTotalElements());
-        pageVO.setData(destList);
-        pageVO.setPageSize(srcPages.getSize());
-        pageVO.setCurrent(srcPages.getNumber() + 1);
-        return pageVO;
+        pageResponse.setTotal(srcPages.getTotalElements());
+        pageResponse.setData(destList);
+        pageResponse.setPageSize(srcPages.getSize());
+        pageResponse.setCurrent(srcPages.getNumber() + 1);
+        return pageResponse;
     }
 }

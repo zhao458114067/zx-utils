@@ -1,7 +1,7 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.zx.utils.service.impl.BaseQuartzManagerImpl,\
   com.zx.utils.util.SpringManager,\
-  com.zx.utils.util.MyBaseConverter,\
+  com.zx.utils.util.BaseConverter,\
   com.zx.utils.config.BaseJpaRepositoryConfig,\
   com.zx.utils.config.RequestMappingConfig,\
   com.zx.utils.config.ExpandApiPlugin
