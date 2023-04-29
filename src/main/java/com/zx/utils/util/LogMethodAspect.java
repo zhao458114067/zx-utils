@@ -28,7 +28,7 @@ public class LogMethodAspect {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Pointcut(" @annotation(com.gpt.wechat.common.annotation.LogAround)")
+    @Pointcut(" @annotation(com.zx.utils.annotation.LogAround)")
     private void logAround() {
 
     }
