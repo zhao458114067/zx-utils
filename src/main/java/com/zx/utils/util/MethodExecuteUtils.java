@@ -14,13 +14,13 @@ import java.lang.reflect.Method;
 @Slf4j
 public class MethodExecuteUtils {
     @FunctionalInterface
-    public interface LogMethodFunction<Q, B> extends Serializable {
+    public interface LogMethodFunction<B> extends Serializable {
         /**
          * 执行方法
-         * @param q
+         *
          * @return
          */
-        B execute(Q q);
+        B execute();
 
         /**
          * 获取lambda方法
@@ -41,11 +41,10 @@ public class MethodExecuteUtils {
      * 执行rpc远程调用逻辑
      *
      * @param function
-     * @param <Q>      response
      * @param <B>      response
      * @return
      */
-    public static <Q, B> B logAround(Q request, LogMethodFunction<Q, B> function) {
+    public static <B> B logAround(LogMethodFunction<B> function) {
         SerializedLambda serializedLambda = null;
         try {
             serializedLambda = function.getSerializedLambda();
@@ -60,17 +59,17 @@ public class MethodExecuteUtils {
         // 方法名
         String methodName = serializedLambda.getImplMethodName();
         methodName = className + "." + methodName + " ";
-        log.info(methodName + "execute before, requestBody: {}", OBJECT_MAPPER.valueToTree(request));
+        log.info(methodName + "execute.before, requestBody: {}", OBJECT_MAPPER.valueToTree(function));
 
         B responseBody = null;
         long startTime = System.currentTimeMillis();
         try {
-            responseBody = function.execute(request);
+            responseBody = function.execute();
         } catch (Throwable e) {
-            log.error(methodName + "execute error, exception: {}", OBJECT_MAPPER.valueToTree(e));
+            log.error(methodName + "execute.error, exception: {}", OBJECT_MAPPER.valueToTree(e));
         } finally {
-            log.info(methodName + "execute after, responseBody: {}", OBJECT_MAPPER.valueToTree(responseBody));
-            log.info(methodName + "execute time: {}", System.currentTimeMillis() - startTime + " millisecond");
+            log.info(methodName + "execute.after, responseBody: {}", OBJECT_MAPPER.valueToTree(responseBody));
+            log.info(methodName + "execute.time: {}", System.currentTimeMillis() - startTime + " millisecond");
         }
         return responseBody;
     }

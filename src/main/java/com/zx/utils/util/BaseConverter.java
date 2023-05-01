@@ -1,8 +1,6 @@
 package com.zx.utils.util;
 
 import com.zx.utils.controller.vo.PageVO;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.dozer.DozerBeanMapper;
 import org.dozer.Mapper;
 import org.slf4j.Logger;
@@ -10,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.util.CollectionUtils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
