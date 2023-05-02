@@ -6,7 +6,7 @@
 
     <groupId>cn.supzx.utils</groupId>
     <artifactId>zx-utils</artifactId>
-    <version>1.1.5</version>
+    <version>1.1.5-snapshop-5</version>
 
     <name>zx-utils</name>
 
@@ -72,69 +72,17 @@
                     <groupId>ch.qos.logback</groupId>
                     <artifactId>logback-classic</artifactId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>spring-aspects</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
             </exclusions>
         </dependency>
         <!-- swagger接口注释-->
         <dependency>
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
-            <exclusions>
-                <exclusion>
-                    <artifactId>springfox-spi</artifactId>
-                    <groupId>io.springfox</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>springfox-swagger-common</artifactId>
-                    <groupId>io.springfox</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>classmate</artifactId>
-                    <groupId>com.fasterxml</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>swagger-models</artifactId>
-                    <groupId>io.swagger</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-plugin-core</artifactId>
-                    <groupId>org.springframework.plugin</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-beans</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-context</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-<!--                <exclusion>-->
-<!--                    <artifactId>springfox-core</artifactId>-->
-<!--                    <groupId>io.springfox</groupId>-->
-<!--                </exclusion>-->
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.battcn</groupId>
             <artifactId>swagger-spring-boot-starter</artifactId>
             <version>2.1.5-RELEASE</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-aop</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-beans</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-context</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -189,16 +137,6 @@
             <groupId>com.belerweb</groupId>
             <artifactId>pinyin4j</artifactId>
             <version>2.5.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
         </dependency>
         <!--velocity代码生成使用模板 -->
         <dependency>

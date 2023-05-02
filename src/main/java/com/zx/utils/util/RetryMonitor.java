@@ -33,7 +33,12 @@ public class RetryMonitor implements ApplicationRunner {
             new BasicThreadFactory.Builder().namingPattern("retryTaskExecutor").daemon(true).build());
 
     public void registryRetry(Supplier<?> retryFunction) {
-        retryFunctionSet.add(retryFunction);
+        try {
+            retryFunction.get();
+        } catch (Exception e) {
+            retryFunctionSet.add(retryFunction);
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
@@ -46,13 +51,14 @@ public class RetryMonitor implements ApplicationRunner {
                     needRemoveFunction.add(supplier);
                 } catch (Exception e) {
                     Integer fieldCount = failedMap.get(supplier);
-                    fieldCount = fieldCount == null ? 0 : fieldCount + 1;
+                    fieldCount = fieldCount == null ? 1 : fieldCount + 1;
                     failedMap.put(supplier, fieldCount);
-                    if (fieldCount > 3) {
+                    if (fieldCount >= 3) {
                         needRemoveFunction.add(supplier);
                         failedMap.remove(supplier);
                     }
-                    log.error("方法：{}，重试第 {} 次发生异常，errorMessage：{}", supplier.toString(), fieldCount, e.getMessage());
+                    log.error("重试第 {} 次发生异常，errorMessage：{}", fieldCount, e.getMessage());
+                    e.printStackTrace();
                 }
             }
             for (Supplier<?> retryFunction : needRemoveFunction) {

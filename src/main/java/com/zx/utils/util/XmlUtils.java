@@ -1,5 +1,7 @@
 package com.zx.utils.util;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -38,10 +40,10 @@ public class XmlUtils {
     public static <T> String javaBeanToXmlString(T t) {
         try {
             Marshaller marshaller = JAXBContext.newInstance(t.getClass()).createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             StringWriter stringWriter = new StringWriter();
             marshaller.marshal(t, stringWriter);
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            return stringWriter.toString();
+            return StringEscapeUtils.unescapeHtml4(stringWriter.toString());
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
