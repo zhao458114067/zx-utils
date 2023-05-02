@@ -41,7 +41,7 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     @RequestMapping(path = "", method = RequestMethod.POST)
     @ModelMapping
     @ApiOperation(value = "新增", notes = "")
-    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public synchronized void add(@RequestBody S entityVO) {
         E entity = baseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
         try {
@@ -56,7 +56,7 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     @RequestMapping(path = "", method = RequestMethod.PUT)
     @ModelMapping
     @ApiOperation(value = "更新", notes = "必须传数据库id值")
-    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void update(@RequestBody S entityVO) {
         E entity = baseConverter.convertSingleObject(entityVO, (Class<E>) actualTypeArguments[1]);
         try {
@@ -70,7 +70,7 @@ public class BaseControllerModel<S, E> implements ApplicationRunner {
     @RequestMapping(path = "/{ids}", method = RequestMethod.DELETE)
     @ModelMapping
     @ApiOperation(value = "信息删除", notes = "多个用逗号隔开")
-    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteValid(@PathVariable String ids) {
         baseRepository.deleteValid(ids);
     }

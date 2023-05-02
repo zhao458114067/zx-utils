@@ -73,7 +73,7 @@ public class BaseRepositoryImpl<T, ID extends Serializable>
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteValid(String ids) {
         List<String> strings = Arrays.asList(ids.split(","));
         if (!CollectionUtils.isEmpty(strings)) {

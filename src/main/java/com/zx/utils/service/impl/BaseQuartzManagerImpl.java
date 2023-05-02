@@ -40,7 +40,7 @@ public class BaseQuartzManagerImpl implements BaseQuartzManager, ApplicationRunn
 
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void createJob(Class<? extends Job> jobClass, String jobName, String jobGroupName, String cronExpression, JSONObject params, boolean exeOnce) {
         // 创建scheduler，调度器, 策略采用错过之后立即执行一次
         CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionFireAndProceed();
@@ -79,7 +79,7 @@ public class BaseQuartzManagerImpl implements BaseQuartzManager, ApplicationRunn
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public void deleteJob(String jobName, String jobGroupName) {
         try {
             scheduler.pauseTrigger(TriggerKey.triggerKey(jobName, jobGroupName));
