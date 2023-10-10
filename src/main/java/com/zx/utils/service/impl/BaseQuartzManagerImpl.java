@@ -128,7 +128,6 @@ public class BaseQuartzManagerImpl implements BaseQuartzManager, ApplicationRunn
     }
 
     @Override
-    @Async
     public void run(ApplicationArguments args) throws Exception {
         // 启动自动装配定时任务，执行之前未执行的任务
         List<BaseScheduledTaskEntity> scheduledJobEntities = baseSchedulerTaskRepository.findByAttr("valid", Constants.VALID_TRUE.toString());
