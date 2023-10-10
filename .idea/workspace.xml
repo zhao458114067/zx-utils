@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="81aaf434-8c24-4b9b-a0f4-9c4e4e7bd6e5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/zx/utils/service/impl/BaseQuartzManagerImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zx/utils/service/impl/BaseQuartzManagerImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/zx/utils/util/HttpClientUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zx/utils/util/HttpClientUtil.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -118,7 +116,7 @@
       <workItem from="1695218464783" duration="338000" />
       <workItem from="1695393085022" duration="534000" />
       <workItem from="1695394770899" duration="645000" />
-      <workItem from="1696939566266" duration="7635000" />
+      <workItem from="1696939566266" duration="8326000" />
     </task>
     <task id="LOCAL-00001" summary="feat：添加工具类">
       <created>1682785222117</created>
@@ -162,7 +160,14 @@
       <option name="project" value="LOCAL" />
       <updated>1683006336919</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="fix：1">
+      <created>1696947326584</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1696947326585</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,6 +179,7 @@
     <MESSAGE value="feat：添加工具类" />
     <MESSAGE value="feat：日志类失效" />
     <MESSAGE value="fix：默认事务修改" />
-    <option name="LAST_COMMIT_MESSAGE" value="fix：默认事务修改" />
+    <MESSAGE value="fix：1" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix：1" />
   </component>
 </project>

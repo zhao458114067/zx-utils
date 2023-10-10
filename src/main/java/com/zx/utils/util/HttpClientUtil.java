@@ -74,23 +74,17 @@ public class HttpClientUtil {
         closeableHttpResponse.close();
     }
 
-    /**
-     * get请求
-     *
-     * @param url
-     * @return
-     * @throws IOException
-     */
     public static <T> T get(String url, Class<T> tClass) {
         return get(null, url, tClass);
     }
 
     /**
-     * get请求,headers可为null
-     *
-     * @param headers
-     * @param url
+     * get请求
+     * @param headers 请求头，可为空
+     * @param url     请求地址
+     * @param tClass  返回类型
      * @return
+     * @param <T>     返回类型泛型
      */
     public static <T> T get(JSONObject headers, String url, Class<T> tClass) {
         // 创建get请求
@@ -99,26 +93,19 @@ public class HttpClientUtil {
         return executeRequest(httpGet, tClass);
     }
 
-    /**
-     * post请求
-     *
-     * @param url
-     * @param requestBody
-     * @param tClass
-     * @param <T>
-     * @return
-     */
     public static <T> T post(String url, Object requestBody, Class<T> tClass) {
         return post(null, url, requestBody, tClass);
     }
 
     /**
-     * post请求,requestBody可为null,headers可为null
+     * post请求
      *
-     * @param headers
-     * @param url
-     * @param requestBody
+     * @param headers       请求头，可为空
+     * @param url           请求地址
+     * @param requestBody   请求体，可为空
+     * @param tClass        返回类型
      * @return
+     * @param <T>           返回类型泛型
      */
     public static <T> T post(JSONObject headers, String url, Object requestBody, Class<T> tClass) {
         // 创建post请求
@@ -126,28 +113,19 @@ public class HttpClientUtil {
         return executeRequestWithBody(headers, requestBody, tClass, httpRequest);
     }
 
-    /**
-     * put请求
-     *
-     * @param url
-     * @param requestBody
-     * @param tClass
-     * @param <T>
-     * @return
-     */
     public static <T> T put(String url, Object requestBody, Class<T> tClass) {
         return put(null, url, requestBody, tClass);
     }
 
     /**
-     * put,requestBody可为null,headers可为null
+     * put请求
      *
-     * @param headers
-     * @param url
-     * @param requestBody
-     * @param tClass
-     * @param <T>
+     * @param headers       请求头，可为空
+     * @param url           请求地址
+     * @param requestBody   请求体，可为空
+     * @param tClass        返回类型
      * @return
+     * @param <T>           返回类型泛型
      */
     public static <T> T put(JSONObject headers, String url, Object requestBody, Class<T> tClass) {
         // 创建put请求
@@ -155,40 +133,23 @@ public class HttpClientUtil {
         return executeRequestWithBody(headers, requestBody, tClass, httpRequest);
     }
 
-    /**
-     * delete请求
-     *
-     * @param url
-     * @param tClass
-     * @param <T>
-     * @return
-     */
     public static <T> T delete(String url, Class<T> tClass) {
         return delete(null, url, null, tClass);
     }
 
-    /**
-     * delete请求
-     *
-     * @param url
-     * @param requestBody
-     * @param tClass
-     * @param <T>
-     * @return
-     */
     public static <T> T delete(String url, Object requestBody, Class<T> tClass) {
         return delete(null, url, requestBody, tClass);
     }
 
     /**
-     * delete,requestBody可为null,headers可为null
+     * delete请求
      *
-     * @param headers
-     * @param url
-     * @param requestBody
-     * @param tClass
-     * @param <T>
+     * @param headers       请求头，可为空
+     * @param url           请求地址
+     * @param requestBody   请求体，可为空
+     * @param tClass        返回类型
      * @return
+     * @param <T>           返回类型泛型
      */
     public static <T> T delete(JSONObject headers, String url, Object requestBody, Class<T> tClass) {
         // 创建delete请求，HttpDeleteWithBody 为内部类，类在下面
