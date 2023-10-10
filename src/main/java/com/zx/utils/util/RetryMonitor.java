@@ -67,18 +67,6 @@ public class RetryMonitor {
         } catch (Exception e) {
             failedQueue.offer(Pair.of(retryFunction, 1));
             log.error("执行 1/3 失败，进入重试队列", e);
-//            throw new RuntimeException(e);
-        }
-    }
-
-    public static void main(String[] args) {
-        registry(() -> System.out.println(111/0));
-        while (true){
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 }
