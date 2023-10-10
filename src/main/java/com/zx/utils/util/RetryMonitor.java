@@ -2,68 +2,83 @@ package com.zx.utils.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
+import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.Objects;
+import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
- * @author KuiChi
+ * @author ZhaoXu
  * @date 2023/5/1 11:54
  */
-@Component
-@Slf4j
-public class RetryMonitor implements ApplicationRunner {
-    Set<Supplier<?>> retryFunctionSet = new HashSet<>();
+public class RetryMonitor {
+    @FunctionalInterface
+    public interface Execute {
+        void execute();
+    }
 
-    Map<Supplier<?>, Integer> failedMap = new HashMap<>(8);
+    private static final Logger log = LoggerFactory.getLogger(RetryMonitor.class);
 
-    private final ScheduledExecutorService retryTaskExecutor = new ScheduledThreadPoolExecutor(1,
-            new BasicThreadFactory.Builder().namingPattern("retryTaskExecutor").daemon(true).build());
+    private static final BlockingQueue<Pair<Execute, Integer>> failedQueue = new LinkedBlockingQueue<>();
 
-    public void registryRetry(Supplier<?> retryFunction) {
+    private static final ScheduledExecutorService retryTaskExecutor = new ScheduledThreadPoolExecutor(1,
+            new BasicThreadFactory.Builder().namingPattern("retryTaskExecutor").
+                    daemon(true)
+                    .build());
+
+    static {
+        retryTaskExecutor.scheduleAtFixedRate(() -> {
+            Pair<Execute, Integer> take = null;
+            try {
+                take = failedQueue.take();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
+            Execute key = take.getKey();
+            try {
+                key.execute();
+            } catch (Exception e) {
+                Integer failedNumber = take.getValue();
+                log.error("重试第 {} 次失败", ++failedNumber, e);
+                if (failedNumber < 3) {
+                    failedQueue.offer(Pair.of(key, failedNumber));
+                }
+            }
+        }, 5, 15, TimeUnit.SECONDS);
+    }
+
+    public static void registry(Execute retryFunction) {
+        if (Objects.isNull(retryFunction)) {
+            return;
+        }
         try {
-            retryFunction.get();
+            retryFunction.execute();
         } catch (Exception e) {
-            retryFunctionSet.add(retryFunction);
-            throw new RuntimeException(e);
+            failedQueue.offer(Pair.of(retryFunction, 1));
+            log.error("执行 1/3 失败，进入重试队列", e);
+//            throw new RuntimeException(e);
         }
     }
 
-    @Override
-    public void run(ApplicationArguments args) {
-        retryTaskExecutor.scheduleAtFixedRate(() -> {
-            List<Supplier<?>> needRemoveFunction = new ArrayList<>();
-            for (Supplier<?> supplier : retryFunctionSet) {
-                try {
-                    supplier.get();
-                    needRemoveFunction.add(supplier);
-                } catch (Exception e) {
-                    Integer fieldCount = failedMap.get(supplier);
-                    fieldCount = fieldCount == null ? 1 : fieldCount + 1;
-                    failedMap.put(supplier, fieldCount);
-                    if (fieldCount >= 3) {
-                        needRemoveFunction.add(supplier);
-                        failedMap.remove(supplier);
-                    }
-                    log.error("重试第 {} 次发生异常，errorMessage：{}", fieldCount, e.getMessage());
-                    e.printStackTrace();
-                }
+    public static void main(String[] args) {
+        registry(() -> System.out.println(111/0));
+        while (true){
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            for (Supplier<?> retryFunction : needRemoveFunction) {
-                retryFunctionSet.remove(retryFunction);
-            }
-        }, 5, 5, TimeUnit.SECONDS);
+        }
     }
 }

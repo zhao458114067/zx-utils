@@ -6,7 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="81aaf434-8c24-4b9b-a0f4-9c4e4e7bd6e5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/zx/utils/util/HttpClientUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zx/utils/util/HttpClientUtil.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/zx/utils/util/RetryMonitor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/zx/utils/util/RetryMonitor.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -63,7 +63,7 @@
       <recent name="com.zx.utils.annotation" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.HttpClientUtil">
+  <component name="RunManager" selected="Application.RetryMonitor">
     <configuration name="HttpClientUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.zx.utils.util.HttpClientUtil" />
       <module name="zx-utils" />
@@ -90,8 +90,22 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="RetryMonitor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.zx.utils.util.RetryMonitor" />
+      <module name="zx-utils" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.zx.utils.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.RetryMonitor" />
         <item itemvalue="Application.HttpClientUtil" />
         <item itemvalue="Application.MethodExecuteUtils" />
       </list>
@@ -116,7 +130,7 @@
       <workItem from="1695218464783" duration="338000" />
       <workItem from="1695393085022" duration="534000" />
       <workItem from="1695394770899" duration="645000" />
-      <workItem from="1696939566266" duration="8326000" />
+      <workItem from="1696939566266" duration="12427000" />
     </task>
     <task id="LOCAL-00001" summary="feat：添加工具类">
       <created>1682785222117</created>
@@ -167,7 +181,14 @@
       <option name="project" value="LOCAL" />
       <updated>1696947326585</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="fix：1">
+      <created>1696947909500</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1696947909500</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
